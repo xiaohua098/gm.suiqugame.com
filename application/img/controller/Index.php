@@ -15,15 +15,15 @@ class Index extends Controller{
             }
             if($res['pwd'] == sha1('suiqu_'.$data['pwd'])){
                 //JWT加密
-                $key = "jfdksajfkl;dsajfkdjsaklfdajffdsafdsfdsfdsfdsklfdsafdsafdsafdsdsajlkfdsa";
+                $key = "b23a7a34ae6d11e79e6e185e0f8afcbe";
                 $token = array(
                 'mid' => $res['id'],
                 'name' => $res['name'],
                 'expire_time'=>time()+7200,
                 );
                 $jwt = new \Firebase\JWT\JWT();
-                $jwt_str=$jwt::encode($token, $key);     
-              return renderJson('200','登录成功!',$jwt_str);
+                $token=$jwt::encode($token, $key);     
+              return renderJson('200','登录成功!',$token);
             }else{
               return renderJson('100','登录密码错误!');
             }
