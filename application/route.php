@@ -29,9 +29,8 @@ use think\Route;
 // Route::rule('news','index/News/news_list');
 // Route::rule('new/:url','index/News/news_show');
 
-//后台登录和登出
+//后台登录
 Route::rule('login','img/Index/index');
-Route::rule('out','img/Index/out');
 
 Route::rule('modify/pwd','img/Manager/modifyPwd');
 Route::rule('manager/add','img/Manager/managerAdd');
@@ -40,7 +39,19 @@ Route::rule('manager/add','img/Manager/managerAdd');
 Route::rule('card/punch','img/Card/punchOne');
 Route::rule('card/pay','img/Card/punchAll');
 
+//公告和跑马灯
+Route::rule('notice/add','img/Message/noticeAdd');
+Route::rule('notice/del','img/Message/noticeDel');
+Route::rule('notice/list','img/Message/noticeList');
+Route::rule('notice/content','img/Message/noticeContent');
+Route::rule('horse/add','img/Message/horseAdd');
+Route::rule('horse/del','img/Message/horseDel');
+Route::rule('horse/list','img/Message/horseList');
+Route::rule('horse/content','img/Message/horseContent');
 
+
+//测试
+Route::rule('test','img/Test/test');
 
 
 // Route::rule('auth/list','img/Auth/authList');

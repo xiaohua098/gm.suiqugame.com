@@ -21,16 +21,16 @@ class Manager extends Com{
        if(Request::instance()->isPost()){
             $data=Request::instance()->post();
             if(count($data) != 2){
-                return renderJson('100','参数不合法！');
+                return renderJson('10001','参数不合法！');
             }
             if(empty($data['name']) || empty($data['pwd']) ){
-                return renderJson('100','参数不能为空');
+                return renderJson('10001','参数不能为空');
             }
             $data['pwd']=sha1('suiqu_'.$data['pwd']);
             $data['add_time']=$data['upd_time']=time();
             $res=Db::name('manager')->insert($data);
             if($res){
-                return renderJson('200','添加成功');
+                return renderJson('1','添加成功');
             }
             return renderJson('10000','添加失败');
         }
@@ -115,18 +115,19 @@ class Manager extends Com{
             if($data['new_pwd'] != $data['re_pwd']){
                 return  renderJson('10001','两次输入密码不一致');
             }
-            $mid=Session::get('mid');
+            $mid=$this->mid;
             $res=Db::name('manager')->where('id',$mid)->find();
-            if($res['pwd'] != sha1('suiqu_'.$data['old_pwd']){
-                return  renderJson('10001','原密码不正确');
+            if($res['pwd'] != sha1('suiqu_'.$data['old_pwd'])){
+               return  renderJson('10001','原密码不正确');
             }
-            $res1=Db::name('manager')->where('id',$mid)->update(['pwd'=>sha1('suiqu_'.$data['new_pwd']);
+            $res1=Db::name('manager')->where('id',$mid)->update(['pwd'=>sha1('suiqu_'.$data['new_pwd'])]);
             if($res1){
-                return renderJson('200','密码修改成功');
+               return renderJson('1','密码修改成功');
             }
             return renderJson('10000','密码修改失败');
         }
 
+        return renderJson('101','违法操作');
     }
 
     // //短信验证 
