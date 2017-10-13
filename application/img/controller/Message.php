@@ -41,7 +41,7 @@ class Message extends Com{
     public function  horse(){
         $flag=$this->flag;
         if($flag){
-             return renderJson('10001','token为空或者token已经过期');
+            return renderJson('10001','token为空或者token已经过期');
         }
         if (Request::instance()->isGet()){
             $data=Request::instance()->param();
@@ -73,19 +73,18 @@ class Message extends Com{
         	}
         	$data['add_time']=time();
             $data['mid']=$this->mid;
-        	$data['mid']=$this->mname;
-        	$data['type']=1;
+        	$data['mname']=$this->mname;
+            $data['type']=1;
+        	$data['is_del']=1;
         	$res1=Db::table('message')->insert($data);
+            $m_id = Db::table('message')->getLastInsID();
         	if(!$res1){
         		return renderJson('10000','操作失败');
         	}
         	//操作sqlsrv
-            $res2=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Notice')->where('StatusValue','1')->find();
-            if($res2){
-                Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Notice')->update(['StatusValue'=>'0']);
-            }
+                Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','like','YJMJ_Notice%')->update(['StatusValue'=>'0']);
             $data1=array();
-            $data1['StatusName']='YJMJ_Notice';
+            $data1['StatusName']='YJMJ_Notice_'.$m_id;
             $data1['StatusValue']='1';
             $data1['StatusString']=$data['content'];
             $res3=Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
@@ -94,8 +93,6 @@ class Message extends Com{
             }
         	return renderJson('1','操作成功');
     }
-
-
     public  function  noticeDel($data){
              if(!is_numeric($data['id'])){
                 return renderJson('10001','参数不合法');
@@ -105,14 +102,12 @@ class Message extends Com{
             if(!$res){
                 return renderJson('10000','操作失败');
             }
-            $res1=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Notice')->update(['StatusValue'=>'0']);
+            $res1=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','like','YJMJ_Notice%')->update(['StatusValue'=>'0']);
             if(!$res1){
                 return renderJson('10002','操作失败');
             }
             return renderJson('1','操作成功');
     }
-
-
     public  function  noticeList($data){
         // return renderJson('1','',$data);
         if(isset($data['type']) && $data['type'] == 0){
@@ -131,12 +126,10 @@ class Message extends Com{
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
         $total=Db::table('message')->where('type',1)->count();
-
         if($offset == 0){
             $notice=Db::table('message')->where('type',1)->order('add_time','desc')->limit($pagesize)->select();
             return renderJson('1','',['notice'=>$notice,'total'=>$total]);
         }
-
         $temple=Db::table('message')->where('type',1)->order('add_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
         $notice=Db::table('message')->where('type',1)->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
@@ -155,20 +148,21 @@ class Message extends Com{
             $data['mid']=$this->mid;
             $data['mid']=$this->mname;
             $data['type']=2;
+            $data['id_del']=1;
             $temple=strip_tags($data['content']);
             $temple=str_replace('&nbsp;', '  ', $temple);
             $data['title']=mb_substr($temple,0,15,'utf-8').'...';
             $res1=Db::table('message')->insert($data);
+            $m_id = Db::name('message')->getLastInsID();
             if(!$res1){
                 return renderJson('10000','操作失败');
             }
             //操作sqlsrv
-            $res2=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Paoma')->where('StatusValue','1')->find();
-            if($res2){
-                Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Paoma')->update(['StatusValue'=>'0']);
-            }
+            
+                Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','like','YJMJ_Paoma%')->update(['StatusValue'=>'0']);
+        
             $data1=array();
-            $data1['StatusName']='YJMJ_Paoma';
+            $data1['StatusName']='YJMJ_Paoma_'.$m_id;
             $data1['StatusValue']='1';
             $data1['StatusString']=$data['content'];
             $res3=Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
@@ -189,7 +183,7 @@ class Message extends Com{
             if(!$res){
                 return renderJson('10000','操作失败');
             }
-            $res1=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Paoma')->update(['StatusValue'=>'0']);
+            $res1=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','like','YJMJ_Paoma%')->update(['StatusValue'=>'0']);
             if(!$res1){
                 return renderJson('10002','操作失败');
             }

@@ -32,6 +32,19 @@ class Test extends Controller{
         //  $uid='1';
         //  $uid=explode(',',$uid);
         //  // var_dump($uid);exit;
-        // Db::table('punch_card')->where('uid','in',array(1,0))->setInc('num',10);
+        $res=Db::table('punch_card')->insert(['uid'=>0,'mid'=>2,'mname'=>'admin','num'=>111,'add_time'=>time()]);
+        var_dump($res);
+        // 
+        // 
+        // 
+       // https://code.aliyun.com/suiqu/jymj-gm-server.git
+       // 
+       // 
+       // 
+       // $data1=array();
+       //      $data1['StatusName']='YJMJ_Notice';
+       //      $data1['StatusValue']='1';
+       //      $data1['StatusString']='shgfgsfgdhjfhjd';
+       //      $res3=Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
 	}
 }
