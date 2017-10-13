@@ -4,32 +4,44 @@ use think\Controller;
 use think\Db;
 use \think\Request;
 use think\Session;
-// 指定允许其他域名访问  
-header('Access-Control-Allow-Origin:*');  
-// 响应类型  
-header('Access-Control-Allow-Methods:*');  
-// 响应头设置  
-header('Access-Control-Allow-Headers:x-requested-with,content-type,token');  
+// //指定允许其他域名访问  
+// header('Access-Control-Allow-Origin:*');  
+// // 响应类型  
+// header('Access-Control-Allow-Methods:*');  
+// // 响应头设置  
+// header('Access-Control-Allow-Headers:content-type,token');  
 class Com extends Controller{
     protected $mid='';
+    protected $flag='';
+    protected $mname='';
 	//检查用户是否登陆
     public function _initialize(){
        $key = "b23a7a34ae6d11e79e6e185e0f8afcbe";
         $token = isset($_SERVER['HTTP_TOKEN']) ? $_SERVER['HTTP_TOKEN'] : '';
+        // var_dump(renderJson('10001','token值',$token));
         if($token == ''){
-             $this->redirect('/public/index.php/login',302);
+            $this->flag='1';
+            return false;
+            // $json= renderJson('10001','token不能为空');
+            // var_dump($json);
+            // die;
+            // $this->redirect('http://192.168.0.8:8090/public/index.php/login');
         }
         $jwt = new \Firebase\JWT\JWT();
-        $decoded =$jwt::decode($str, $key, array('HS256'));
+        $decoded =$jwt::decode($token, $key, array('HS256'));
         if(!is_object($decoded)){
-           $this->redirect('/public/index.php/login',302);
+            $this->flag='1';
+            return  false;
         }else{
             $arr = json_decode(json_encode($decoded), true);
             //判断用户登陆是否过期
             if($arr['expire_time']<time()){
-                $this->redirect('/public/index.php/login',302);
+                $this->flag='1';
+                return false;
             }
             $this->mid=$arr['mid'];
+            $this->mname=$arr['mname'];
+            $this->flag='';
         }
       
 
@@ -55,4 +67,6 @@ class Com extends Controller{
     //        $this->redirect('/login',302);
     //     }
     }
+
+
 }

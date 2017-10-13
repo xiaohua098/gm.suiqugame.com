@@ -2,22 +2,36 @@
 namespace app\img\controller;
 use think\Controller;
 use think\Db;
+// // 指定允许其他域名访问  
+// header('Access-Control-Allow-Origin:*');  
+// // 响应类型  
+// header('Access-Control-Allow-Methods:*');  
+// // 响应头设置  
+// header('Access-Control-Allow-Headers:content-type,token'); 
 class Test extends Controller{
-	public  function   test(){
-		// $res=$_SERVER['PHP_SELF'];//card/punch
-        //     return renderJson('1','',$res);
+	public  function   test(){   
+		// // 启动事务
+		// Db::startTrans();
+		// try{
+		//     Db::table('punch_card')->insert(['mname'=>'admin','mid'=>11,'num'=>11,'uid'=>222,'add_time'=>time()]);
+		//     Db::connect('db2')->table('SystemStatusInfo')->where('StayusName','YJMJ_Notice')->update(['StatusValue'=>'1']);
+		//     // 提交事务
+		//     Db::commit();    
+		// } catch (\Exception $e) {
+		//     // 回滚事务
+		//     Db::rollback();
+		//     return renderJson('10001','事务执行失败');
+		// }
 
-		// 启动事务
-		Db::startTrans();
-		try{
-		    Db::table('manager')->where('id',90)->find();
-		    // Db::table('manager')->delete();
-		    // 提交事务
-		    Db::commit();    
-		} catch (\Exception $e) {
-		    // 回滚事务
-		    // Db::rollback();
-		    var_dump($e);
-		}
+
+
+		 // var_dump($_SERVER['HTTP_TOKEN']);
+        // var_dump($this->mid);
+        // var_dump($this->flag);
+        // // exit;
+        //  $uid='1';
+        //  $uid=explode(',',$uid);
+        //  // var_dump($uid);exit;
+        // Db::table('punch_card')->where('uid','in',array(1,0))->setInc('num',10);
 	}
 }

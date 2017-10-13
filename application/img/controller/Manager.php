@@ -4,6 +4,12 @@ use think\Controller;
 use think\Db;
 use \think\Request;
 use think\Session;
+// // 指定允许其他域名访问  
+// header('Access-Control-Allow-Origin:*');  
+// // 响应类型  
+// header('Access-Control-Allow-Methods:*');  
+// // 响应头设置  
+// header('Access-Control-Allow-Headers:content-type,token'); 
 class Manager extends Com{
     // //后台管理员列表
     // public function managerList(){
@@ -16,15 +22,46 @@ class Manager extends Com{
     //     }
     //     return renderJson('100','获取失败');
     // }
+    // 
+     
+    public function  manager(){
+        $flag=$this->flag;
+        if($flag){
+             return renderJson('10001','token为空或者token已经过期');
+        }
+        // if (Request::instance()->isGet()){
+        //     $data=Request::instance()->param();
+        //    return  $this->noticeList($data);
+        // }
+        // 是否为 POST 请求
+        if (Request::instance()->isPost()){
+            $data=Request::instance()->param();
+           return  $this->managerAdd($data);
+        }
+        // 是否为 PUT 请求
+        if (Request::instance()->isPut()){
+            $data=Request::instance()->param();
+           return  $this->modifyPwd($data);
+        }
+        // // 是否为 DELETE 请求
+        // if (Request::instance()->isDelete()){
+        //     $data=Request::instance()->param();
+        //    return  $this->noticeDel($data);
+        // };
+        return renderJson('101','违法操作');
+    }
+
     //添加管理员
-    public function managerAdd(){
-       if(Request::instance()->isPost()){
-            $data=Request::instance()->post();
+    public function managerAdd($data){
             if(count($data) != 2){
                 return renderJson('10001','参数不合法！');
             }
             if(empty($data['name']) || empty($data['pwd']) ){
                 return renderJson('10001','参数不能为空');
+            }
+            $res1=Db::name('manager')->where('name',$data['name'])->find();
+            if($res1){
+                return renderJson('10005','该用户名已存在');
             }
             $data['pwd']=sha1('suiqu_'.$data['pwd']);
             $data['add_time']=$data['upd_time']=time();
@@ -33,9 +70,8 @@ class Manager extends Com{
                 return renderJson('1','添加成功');
             }
             return renderJson('10000','添加失败');
-        }
-        return renderJson('101','违法操作');
     }
+
     // //修改管理员
     // public function managerEdit(){
     //     if(Request::instance()->isGet()){
@@ -110,24 +146,19 @@ class Manager extends Com{
 
     //修改密码
     public function  modifyPwd(){
-        if(Request::instance()->isPost()){
-            $data=Request::instance()->post();
             if($data['new_pwd'] != $data['re_pwd']){
                 return  renderJson('10001','两次输入密码不一致');
             }
             $mid=$this->mid;
             $res=Db::name('manager')->where('id',$mid)->find();
             if($res['pwd'] != sha1('suiqu_'.$data['old_pwd'])){
-               return  renderJson('10001','原密码不正确');
+               return  renderJson('10006','原密码不正确');
             }
             $res1=Db::name('manager')->where('id',$mid)->update(['pwd'=>sha1('suiqu_'.$data['new_pwd'])]);
             if($res1){
                return renderJson('1','密码修改成功');
             }
             return renderJson('10000','密码修改失败');
-        }
-
-        return renderJson('101','违法操作');
     }
 
     // //短信验证 
