@@ -4,15 +4,12 @@ use think\Controller;
 use think\Db;
 use \think\Request;
 use think\Session;
-// // 指定允许其他域名访问  
-// header('Access-Control-Allow-Origin:*');  
-// // 响应类型  
-// header('Access-Control-Allow-Methods:*');  
-// // 响应头设置  
-// header('Access-Control-Allow-Headers:x-requested-with,content-type,token'); 
+use app\img\model\pub;
+
 class Message extends Com{
     public function  notices(){
         $flag=$this->flag;
+        // var_dump($flag);exit;
         if($flag){
              return renderJson('10001','token为空或者token已经过期');
         }
@@ -32,7 +29,7 @@ class Message extends Com{
         // }
         // 是否为 DELETE 请求
         if (Request::instance()->isDelete()){
-            $data=Request::instance()->param();
+           $data=Request::instance()->param();
            return  $this->noticeDel($data);
         };
         return renderJson('101','违法操作');
@@ -98,7 +95,7 @@ class Message extends Com{
                 return renderJson('10001','参数不合法');
             }
             $id=$data['id'];
-            $res=Db::table('message')->where('id',$id)->update(['is_del',0]);
+            $res=Db::table('message')->where('id',$id)->update(['is_del'=>0]);
             if(!$res){
                 return renderJson('10000','操作失败');
             }
@@ -146,9 +143,9 @@ class Message extends Com{
             $data=Request::instance()->post();
             $data['add_time']=time();
             $data['mid']=$this->mid;
-            $data['mid']=$this->mname;
+            $data['mname']=$this->mname;
             $data['type']=2;
-            $data['id_del']=1;
+            $data['is_del']=1;
             $temple=strip_tags($data['content']);
             $temple=str_replace('&nbsp;', '  ', $temple);
             $data['title']=mb_substr($temple,0,15,'utf-8').'...';
@@ -179,7 +176,7 @@ class Message extends Com{
                 return renderJson('10001','参数不合法');
             }
             $id=$data['id'];
-            $res=Db::table('message')->where('id',$id)->update(['is_del',0]);
+            $res=Db::table('message')->where('id',$id)->update(['is_del'=>0]);
             if(!$res){
                 return renderJson('10000','操作失败');
             }

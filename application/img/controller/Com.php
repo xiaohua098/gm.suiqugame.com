@@ -14,23 +14,22 @@ class Com extends Controller{
     protected $mid='';
     protected $flag='';
     protected $mname='';
+    protected $path='';
 	//检查用户是否登陆
     public function _initialize(){
-       $key = "b23a7a34ae6d11e79e6e185e0f8afcbe";
-        $token = isset($_SERVER['HTTP_TOKEN']) ? $_SERVER['HTTP_TOKEN'] : '';
-        // var_dump(renderJson('10001','token值',$token));
+       // $key="b23a7a34ae6d11e79e6e185e0f8afcbe";
+       $key="jfdksajfkl;dsajfkdjsaklfdajffdsafdsfdsfdsfdsklfdsafdsafdsafdsdsajlkfdsa";
+        $token =isset($_SERVER['HTTP_TOKEN']) ? $_SERVER['HTTP_TOKEN'] : '';
+        // var_dump(renderJson('10001','token值',$token));exit;
         if($token == ''){
             $this->flag='1';
             return false;
-            // $json= renderJson('10001','token不能为空');
-            // var_dump($json);
-            // die;
-            // $this->redirect('http://192.168.0.8:8090/public/index.php/login');
         }
         $jwt = new \Firebase\JWT\JWT();
-        $decoded =$jwt::decode($token, $key, array('HS256'));
+        $decoded =$jwt::decode($token,$key,array('HS256'));
         if(!is_object($decoded)){
             $this->flag='1';
+            $this->token=$token;
             return  false;
         }else{
             $arr = json_decode(json_encode($decoded), true);
@@ -47,25 +46,22 @@ class Com extends Controller{
 
       
         //判断是否越权访问
-        // $url=Request::instance()->url();
-        // $url=explode('/',$url);
-        // // var_dump($url);exit;
-        // if(count($url) != 3){
-        // $this->redirect('/login',302);
-        // }
-    //     $url=$url[1].'/'.$url[2];
-    //     // $url=ltrim($url,'/');
-    //     // $url=rtrim($url,'.html');
-    //     $now_path=$url;
-    //     // 从session中获取所有可访问的 模块-控制器-方法字符串
-    //     $all_path = Session::get('paths');
-    //     $path_arr = explode(',', $all_path);
-    //     // dump($path_arr);
-    //     // dump($now_path);exit;
+        //判断是否是超级管理员
+        //if($arr['is_admin']==1)
+        //{
+            //return true;
+        //} 
+        //$paths=$res['paths'];
+        // $method=Request::instance()->method();
+        // $path=ltrim($_SERVER['PATH_INFO'],'/').strtolower($method); 
+        // $title=Db::table('auth')->field('title')->where('path',$path)->find(); 
+        // // var_dump($title);exit;
+        // $this->path= $title['title'];  
     //     // 如果当前访问的 模块-控制器-路径不在 允许的范围中，则跳转到登录界面
-    //     if(!in_array($now_path, $path_arr)){
-    //        $this->redirect('/login',302);
+    //     if(!in_array($path,$paths)){
+    //        $this->flag='2';
     //     }
+        //$record=  
     }
 
 

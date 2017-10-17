@@ -44,6 +44,8 @@ Route::rule('manager','img/Manager/manager');
 // Route::rule('card/pay','img/Card/punchAll');
 
 Route::rule('card','img/Card/card');
+Route::rule('auth','img/Auth/auth');
+
 
 
 //公告和跑马灯
@@ -60,6 +62,7 @@ Route::rule('card','img/Card/card');
 
 
 Route::rule('notices','img/Message/notices');
+Route::rule('horse','img/Message/horse');
 
 
 

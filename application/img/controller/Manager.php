@@ -4,12 +4,7 @@ use think\Controller;
 use think\Db;
 use \think\Request;
 use think\Session;
-// // 指定允许其他域名访问  
-// header('Access-Control-Allow-Origin:*');  
-// // 响应类型  
-// header('Access-Control-Allow-Methods:*');  
-// // 响应头设置  
-// header('Access-Control-Allow-Headers:content-type,token'); 
+use app\img\model\pub;
 class Manager extends Com{
     // //后台管理员列表
     // public function managerList(){
@@ -145,7 +140,7 @@ class Manager extends Com{
     // }
 
     //修改密码
-    public function  modifyPwd(){
+    public function  modifyPwd($data){
             if($data['new_pwd'] != $data['re_pwd']){
                 return  renderJson('10001','两次输入密码不一致');
             }

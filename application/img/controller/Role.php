@@ -4,7 +4,7 @@ use think\Controller;
 use think\Db;
 use \think\Request;
 use think\Session;
-
+use app\img\model\pub;
 class Role extends Com{
     //角色列表
     public function roleList(){

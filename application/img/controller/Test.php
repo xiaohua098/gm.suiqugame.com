@@ -2,6 +2,8 @@
 namespace app\img\controller;
 use think\Controller;
 use think\Db;
+use think\Request;  
+use think\Response;
 // // 指定允许其他域名访问  
 // header('Access-Control-Allow-Origin:*');  
 // // 响应类型  
@@ -32,8 +34,8 @@ class Test extends Controller{
         //  $uid='1';
         //  $uid=explode(',',$uid);
         //  // var_dump($uid);exit;
-        $res=Db::table('punch_card')->insert(['uid'=>0,'mid'=>2,'mname'=>'admin','num'=>111,'add_time'=>time()]);
-        var_dump($res);
+        // $res=Db::table('punch_card')->insert(['uid'=>0,'mid'=>2,'mname'=>'admin','num'=>111,'add_time'=>time()]);
+        // var_dump($res);
         // 
         // 
         // 
@@ -46,5 +48,52 @@ class Test extends Controller{
        //      $data1['StatusValue']='1';
        //      $data1['StatusString']='shgfgsfgdhjfhjd';
        //      $res3=Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
+       //      
+       //      
+      // $method=Request::instance()->method();     
+      // $path=ltrim($_SERVER['PATH_INFO'],'/').strtolower($method);
+      // var_dump($path);
+      // // 
+      // // 
+       
+      // var_dump($_SERVER);
+      // 
+      // Db::connect('db1')->table('GameScoreInfo')->where('UserId','in',[1000])->setInc('InsureScore',5);
+      // 
+    
+      // //操作记录
+      // $operate_arr=array();
+      // $operate_arr['mid']=$this->mid;
+      // $operate_arr['mname']=$this->mname;
+      // $operate_arr['ip']=$_SERVER['REMOTE_ADDR'];
+      // $operate_arr['path']=$this->path;
+      // $operate_arr['param']=$data;
+      // $operate_arr['code']=;
+      // $operate_arr['add_time']=time();
+      // $operate_arr['response']=$result;
+       
+      // var_dump($ip);
+      // $my_arr=array(); 
+      // for($i=0;$i<1000;$i++){
+      //     $my_arr[$i]['mname']='admin';
+      //     $my_arr[$i]['mid']='3';
+      //     $my_arr[$i]['uid']=$i+1;
+      //     $my_arr[$i]['add_time']=time();
+      //     $my_arr[$i]['num']='5';
+      // }
+      // var_dump($my_arr);exit;
+      // $my_arr=array(array('mname'=>'hong','mid'=>1,'num'=>3,'uid'=>1,'add_time'=>time()),array('mname'=>'hong','mid'=>2,'num'=>3,'uid'=>3,'add_time'=>time()));
+      // var_dump($my_arr);exit;
+      // $res=Db::table('punch_card')->insertAll($my_arr);
+      // var_dump($res);
+      // 
+      // 
+      // $url=Request::instance()->url();
+      // var_dump($url);
+// $url = 'http://t.cn/h5mwx';
+// $headers = get_headers($url, TRUE);
+// print_r($headers);
+
+
 	}
 }
