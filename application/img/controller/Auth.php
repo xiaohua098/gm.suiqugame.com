@@ -10,7 +10,7 @@ class Auth extends Com{
         $flag=$this->flag;
         // var_dump($flag);exit;
         if($flag){
-            return renderJson('10001','token为空或者token已经过期');
+             return renderJson('10001','token为空或者token已经过期');
         }
         if (Request::instance()->isGet()){
             $data=Request::instance()->param();
@@ -31,8 +31,15 @@ class Auth extends Com{
            $data=Request::instance()->param();
            return  $this->authDel($data);
         };
+
+        $param=$data;
+        $model=new pub;
+        //写入日志
+        $data=Request::instance()->param();
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
         return renderJson('101','违法操作');
     }
+
 
     //权限列表
     public function authList($data){
@@ -60,11 +67,26 @@ class Auth extends Com{
              return renderJson('1','',['auth'=>$auth]);
         }
 
+
+    //权限列表
+    public function authList($data){
+        // var_dump($this->path);exit;
+        $model=new pub;
+        if(isset($data['id']) && is_numeric($data['id'])){
+            $auth=Db::table('auth')->where('id',$data['id'])->find();
+            $auth['content'] = htmlspecialchars_decode($auth['content']);
+            return renderJson('1','',[0=>$auth]);
+        }
+        if(empty($data['pagesize'])){
+            return renderJson('10001','参数不能为空');
+        }
+
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
         $total=Db::table('auth')->count();
         if($offset == 0){
             $auth=Db::table('auth')->order('add_time','desc')->limit($pagesize)->select();
+
             //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['auth'=>$auth,'total'=>$total]]));
             return renderJson('1','',['auth'=>$auth,'total'=>$total]);
@@ -72,8 +94,17 @@ class Auth extends Com{
         $temple=Db::table('auth')->order('add_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
         $auth=Db::table('auth')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['auth'=>$auth,'total'=>$total]]));
+
+        
+        $res=$model->saveRecord($this->mid,$this->mname,$this->path,json_encode($data),json_encode(['code'=>'1','message'=>'','data'=>['auth'=>$auth,'total'=>$total]]));
+        
+        if(!$res){
+            return renderJson('10010','日志写入错误');
+        }
+
         return renderJson('1','',['auth'=>$auth,'total'=>$total]);
     }
     //添加权限

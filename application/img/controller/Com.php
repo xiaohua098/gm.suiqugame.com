@@ -15,7 +15,6 @@ class Com extends Controller{
     protected $flag='';
     protected $mname='';
     protected $path='';
-    protected $expire_time=0;
 	//检查用户是否登陆
     public function _initialize(){
        // $key="b23a7a34ae6d11e79e6e185e0f8afcbe";
@@ -30,20 +29,19 @@ class Com extends Controller{
         $decoded =$jwt::decode($token,$key,array('HS256'));
         if(!is_object($decoded)){
             $this->flag='1';
-            $this->token=$token;
             return  false;
         }else{
             $arr = json_decode(json_encode($decoded), true);
             //判断用户登陆是否过期
-            if($arr['expire_time'] < time()){
+            if($arr['expire_time']<time()){
                 $this->flag='1';
-                $this->expire_time=$arr['expire_time'];
+
                 return false;
             }
             $this->mid=$arr['mid'];
             $this->mname=$arr['mname'];
             $this->flag='';
-            $this->expire_time=$arr['expire_time'];
+
         }
       
 
@@ -64,7 +62,7 @@ class Com extends Controller{
     //     if(!in_array($path,$paths)){
     //        $this->flag='2';
     //     }
-        //$record=  
+        
     }
 
 

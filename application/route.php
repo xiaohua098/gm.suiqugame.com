@@ -65,6 +65,19 @@ Route::rule('notices','img/Message/notices');
 Route::rule('horse','img/Message/horse');
 
 
+//实时统计
+Route::rule('census','img/Census/census');
+//房卡消耗
+Route::rule('expend','img/Expend/expend');
+//房卡产出
+Route::rule('punch','img/Punch/punch');
+//房卡库存
+Route::rule('stock','img/Stock/stock');
+
+//充值记录和充值统计
+Route::rule('recharge','img/Recharge/recharge');
+
+
 
 
 //测试

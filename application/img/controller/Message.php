@@ -32,6 +32,11 @@ class Message extends Com{
            $data=Request::instance()->param();
            return  $this->noticeDel($data);
         };
+        $param=$data;
+        $model=new pub;
+        //写入日志
+        $data=Request::instance()->param();
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
         return renderJson('101','违法操作');
     }
 

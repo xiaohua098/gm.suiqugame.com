@@ -57,6 +57,14 @@ class Index extends Controller{
                     return renderJson('10000','操作失败');
                 }
 
+
+                //$login_arr=array();
+                //$login_arr['mid']=$res['id'];
+                //$login_arr['mname']=$res['name'];
+                //$login_arr['ip']=$_SERVER['REMOTE_ADDR'];
+                //$login_arr['add_time']=time();
+                //Db::table('login_record')->insert($login_arr);
+                  
               return renderJson('1','登录成功!',$token);
             }else{
               return renderJson('10000','登录密码错误!');
