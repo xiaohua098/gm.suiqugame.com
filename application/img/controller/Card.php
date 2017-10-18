@@ -28,7 +28,8 @@ class Card extends Com{
             if(empty($data)){
                 return renderJson('10001','参数不合法');
             } 
-            $uid=explode(',',$data['uid']);//$uid='1';是数组
+            $uid=trim($data['uid'],',');
+            $uid=explode(',',$uid);//$uid='1';是数组
             // var_dump($uid);exit;
             $num=$data['num'];
             $mid=$this->mid;

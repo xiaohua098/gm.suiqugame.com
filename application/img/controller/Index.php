@@ -44,13 +44,19 @@ class Index extends Controller{
                 $token=$jwt::encode($token, $key);
 
                 //登录记录
-                //$login_arr=array();
-                //$login_arr['mid']=$res['id'];
-                //$login_arr['mname']=$res['name'];
-                //$login_arr['ip']=$_SERVER['REMOTE_ADDR'];
-                //$login_arr['add_time']=time();
-                //Db::table('login_record')->insert($login_arr);
-                  
+                $login_arr=array();
+                $login_arr['mid']=$res['id'];
+                $login_arr['mname']=$res['name'];
+                $login_arr['ip']=$_SERVER['REMOTE_ADDR'];
+                $login_arr['add_time']=time();
+                $login_arr['expire_time']=date('Y-m-d H:i:s',time()+7200);
+                $login_arr['token']=$token;
+                // var_dump($login_arr);exit;
+                $res1=Db::table('login_record')->insert($login_arr);
+                if(!$res1){
+                    return renderJson('10000','操作失败');
+                }
+
               return renderJson('1','登录成功!',$token);
             }else{
               return renderJson('10000','登录密码错误!');
