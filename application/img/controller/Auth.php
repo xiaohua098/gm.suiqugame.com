@@ -97,7 +97,6 @@ class Auth extends Com{
 
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['auth'=>$auth,'total'=>$total]]));
-
         
         $res=$model->saveRecord($this->mid,$this->mname,$this->path,json_encode($data),json_encode(['code'=>'1','message'=>'','data'=>['auth'=>$auth,'total'=>$total]]));
         

@@ -77,6 +77,16 @@ Route::rule('stock','img/Stock/stock');
 //充值记录和充值统计
 Route::rule('recharge','img/Recharge/recharge');
 
+//玩家
+Route::rule('user','img/User/user');
+//代理
+Route::rule('user','img/User/user');
+//代理每日数据
+Route::rule('agentdaily','img/Agentdaily/agentdaily');
+//代理划卡详情
+Route::rule('agentpunch','img/Agentpunch/agentpunch');
+
+
 
 
 

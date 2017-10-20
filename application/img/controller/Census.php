@@ -47,5 +47,7 @@ class Census extends Com{
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'','data'=>['data'=>$res]]));
 		return renderJson('1','',['data'=>$res]);
 	}
+
+    
 	
 }

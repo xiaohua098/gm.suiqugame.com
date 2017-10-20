@@ -38,6 +38,10 @@ class Card extends Com{
             $uid=explode(',',$uid);//$uid='1';是数组
             // var_dump($uid);exit;
             $num=$data['num'];
+            $abs_num=$abs($num);
+            if($abs_num>2147483647){
+                return renderJson('10001','参数不合法');
+            }
             $mid=$this->mid;
             $mname=$this->mname;
             $time=time();
@@ -57,6 +61,15 @@ class Card extends Com{
                     return renderJson('10008','该游戏用户不存在',$v);
                 }
             }
+            //减房卡时判断用户剩余房卡
+            if($num<0){
+                foreach($uid as $k1=>$v1){
+                    $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1)->column('InsureScore');
+                    if($card_num<$abs_num){
+                        return renderJson('10001','减房卡数量大于用户房卡剩余数量');
+                    }
+                }
+            }
             // 启动事务
             Db::startTrans();
             try{
@@ -74,6 +87,10 @@ class Card extends Com{
     //房卡全服发放
     public function punchAll($data){ 
             $num=$data['num'];
+            $abs_num=$abs($num);
+            if($abs_num>2147483647){
+                return renderJson('10001','参数不合法');
+            }
             $mid=$this->mid;
             $mname=$this->mname;
             $time=time(); 
@@ -86,6 +103,15 @@ class Card extends Com{
                 $my_arr[$k]['mname']=$mname;
                 $my_arr[$k]['add_time']=$time;
                 $my_arr[$k]['mid']=$mid;
+            }
+            //减房卡时判断用户剩余房卡
+            if($num<0){
+                foreach($user as $k1=>$v1){
+                    $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1['uid'])->column('InsureScore');
+                    if($card_num<$abs_num){
+                        return renderJson('10001','减房卡数量大于用户房卡剩余数量');
+                    }
+                }
             }
             //操作mysql
             // 启动事务

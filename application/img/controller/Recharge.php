@@ -58,28 +58,28 @@ class Recharge extends Com{
         if(isset($data['start_time']) && isset($data['end_time'])){
             $start=$data['start_time'];
             $end=$data['end_time'];
-            $total=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->count();
+            $total=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->count();
             if($offset == 0){
-                $record=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
+                $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
             }
-            $temple=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($offset)->select();
+            $temple=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset)->select();
             $tid=array_pop($temple);
-            $record=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+            $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
         
             //写入日志
             $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
-        $total=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->count();
+        $total=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->count();
         if($offset == 0){
-            $record=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
+            $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
-        $temple=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($offset)->select();
+        $temple=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
-        $record=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
@@ -94,68 +94,101 @@ class Recharge extends Com{
         if(isset($data['start_time']) && isset($data['end_time'])){
             $start=$data['start_time'];
             $end=$data['end_time'];
-            $total=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->count();
-            $record=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->select();
+            $total=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->count();
+            $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->select();
             //写入日志
             $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
-        $total=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->count();
-        $record=Db::table('recharge_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->select();
+        $total=Db::table('recharge_total')->count();
+        $record=Db::table('recharge_total')->order('add_time','desc')->select();
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
     }
 
+
+
     //获取某用户充值记录
     public  function  userRecharge($data){
        $param=$data;
        $model=new pub;
-
-       if(isset($data['uid'])){
-          $uid=$data['uid'];
-          $user=Db::table('account')->field('union_id')->where('mssql_account_id',$uid)->find();
-          if(empty($user)){
-             //写入日志
-            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>'','total'=>0]]));
-            return renderJson('1','',['record'=>'','total'=>0]);
-          }
-          $union_id=$user['union_id'];
-       }
-
-        if(empty($data['pagesize'])){
+        if(empty($data['pagesize']) || empty($data['uid'])){
             return renderJson('10001','参数不能为空');
         }
+        $uid=$data['uid'];
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
+
+          $agent=Db::table('account')->field('union_id')->where('mssql_account_id',$uid)->find();
+          if(empty($agent)){
+            $user=Db::connect('db2')->table('AccountsInfo')->where('UserID',$uid)->find();
+            $union_id=$user['unionid'];
+            $nickname=$user['NickName'];
+          }else{
+            $union_id=$agent['union_id'];
+            $nickname=$agent['nickname'];
+            $level=$agent['level'];
+          }
 
         //时间段查询
         if(isset($data['start_time']) && isset($data['end_time'])){
             $start=$data['start_time'];
             $end=$data['end_time'];
-            $total=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->count();
+            $total=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->count();
             if($offset == 0){
-                $record=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($pagesize)->select();
+                $record=Db::table('order_info')->field('union_id','money','amount','code','state','create_time')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($pagesize)->select();
+                //获取用户昵称和代理等级
+                foreach($record as $k => $v) {
+                    $record[$k]['uid']=$uid;
+                    $record[$k]['nickname']=$nickname;
+                    if($level){
+                        $record[$k]['level']=$level;
+                    }
+                }
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
             }
-            $temple=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($offset)->select();
+            $temple=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($offset)->select();
             $tid=array_pop($temple);
-            $record=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
-        
+            $record=Db::table('order_info')->where('create_time','between',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
+            //获取用户昵称和代理等级
+             foreach($record as $k => $v) {
+                    $record[$k]['uid']=$uid;
+                    $record[$k]['nickname']=$nickname;
+                    if($level){
+                        $record[$k]['level']=$level;
+                    }
+                }
             //写入日志
             $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
-        $total=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->count();
+        $total=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->count();
         if($offset == 0){
-            $record=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($pagesize)->select();
+            $record=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($pagesize)->select();
+            //获取用户昵称和代理等级
+             foreach($record as $k => $v) {
+                    $record[$k]['uid']=$uid;
+                    $record[$k]['nickname']=$nickname;
+                    if($level){
+                        $record[$k]['level']=$level;
+                    }
+                }
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
-        $temple=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($offset)->select();
+        $temple=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
-        $record=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
+        $record=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
+        //获取用户昵称和代理等级
+             foreach($record as $k => $v) {
+                    $record[$k]['uid']=$uid;
+                    $record[$k]['nickname']=$nickname;
+                    if($level){
+                        $record[$k]['level']=$level;
+                    }
+                }
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
@@ -168,30 +201,50 @@ class Recharge extends Com{
        $param=$data;
        $model=new pub;
 
-       if(isset($data['uid'])){
-          $uid=$data['uid'];
-          $user=Db::table('account')->field('union_id')->where('mssql_account_id',$uid)->find();
-          if(empty($user)){
-             //写入日志
-            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>'','total'=>0]]));
-            return renderJson('1','',['record'=>'','total'=>0]);
-          }
-          $union_id=$user['union_id'];
-       }
+       if(empty($data['uid'])){
+            return renderJson('10001','参数不能为空');
+        }
+        $uid=$data['uid'];
+        $agent=Db::table('account')->field('union_id')->where('mssql_account_id',$uid)->find();
+        if(empty($agent)){
+            $user=Db::connect('db2')->table('AccountsInfo')->where('UserID',$uid)->find();
+            $union_id=$user['unionid'];
+            $nickname=$user['NickName'];
+        }else{
+            $union_id=$agent['union_id'];
+            $nickname=$agent['nickname'];
+            $level=$agent['level'];
+        }
         //时间段查询
         if(isset($data['start_time']) && isset($data['end_time'])){
             $start=$data['start_time'];
             $end=$data['end_time'];
-            $total=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->count();
-            $record=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->select();
+            $total=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->count();
+            $record=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->select();
+            //获取用户昵称和代理等级
+             foreach($record as $k => $v) {
+                    $record[$k]['uid']=$uid;
+                    $record[$k]['nickname']=$nickname;
+                    if($level){
+                        $record[$k]['level']=$level;
+                    }
+                }
             //写入日志
             $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
-        $total=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->count();
+        $total=Db::table('order_info')->where('union_id',$union_id)->count();
         
-        $record=Db::table('order_info')->where('create_time','between time',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->select();
+        $record=Db::table('order_info')->where('union_id',$union_id)->order('create_time','desc')->select();
+        //获取用户昵称和代理等级
+             foreach($record as $k => $v) {
+                    $record[$k]['uid']=$uid;
+                    $record[$k]['nickname']=$nickname;
+                    if($level){
+                        $record[$k]['level']=$level;
+                    }
+                }
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);

@@ -53,28 +53,28 @@ class Punch extends Com{
         if(isset($data['start_time']) && isset($data['end_time'])){
             $start=$data['start_time'];
             $end=$data['end_time'];
-            $total=Db::table('punch_total')->where('add_time','between time',[$start,$end])->count();
+            $total=Db::table('punch_total')->where('add_time','between ',[$start,$end])->count();
             if($offset == 0){
-                $record=Db::table('punch_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
+                $record=Db::table('punch_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
             }
-            $temple=Db::table('punch_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($offset)->select();
+            $temple=Db::table('punch_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset)->select();
             $tid=array_pop($temple);
-            $record=Db::table('punch_total')->where('add_time','between time',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+            $record=Db::table('punch_total')->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
         
             //写入日志
             $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
-        $total=Db::table('punch_total')->where('add_time','between time',[$start,$end])->count();
+        $total=Db::table('punch_total')->where('add_time','between ',[$start,$end])->count();
         if($offset == 0){
-            $record=Db::table('punch_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
+            $record=Db::table('punch_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
-        $temple=Db::table('punch_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->limit($offset)->select();
+        $temple=Db::table('punch_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
-        $record=Db::table('punch_total')->where('add_time','between time',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        $record=Db::table('punch_total')->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
@@ -84,20 +84,19 @@ class Punch extends Com{
     public  function   exportList($data){
         $param=$data;
         $model=new pub;
-
         //时间段查询
         if(isset($data['start_time']) && isset($data['end_time'])){
             $start=$data['start_time'];
             $end=$data['end_time'];
-            $total=Db::table('punch_total')->where('add_time','between time',[$start,$end])->count();
-            $record=Db::table('punch_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->select();
+            $total=Db::table('punch_total')->where('add_time','between ',[$start,$end])->count();
+            $record=Db::table('punch_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->select();
             //写入日志
             $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
-        $total=Db::table('punch_total')->where('add_time','between time',[$start,$end])->count();
-        $record=Db::table('punch_total')->where('add_time','between time',[$start,$end])->order('add_time','desc')->select();
+        $total=Db::table('punch_total')->count();
+        $record=Db::table('punch_total')->order('add_time','desc')->select();
         //写入日志
         $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);

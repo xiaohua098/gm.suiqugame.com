@@ -94,41 +94,77 @@ class Test extends Controller{
 // $headers = get_headers($url, TRUE);
 // print_r($headers);
 
+    
+   //统计列表的时间查询  //年月日
+    // $res=Db::table('test')->where('add_time','between',['2017-10-18 ','2017-10-19 '])->select();
+    // var_dump($res);
+    
+
+    //记录列表的时间查询  //时间戳
+    // $res=Db::table('test')->where('create_time','between',[strtotime('2017-10-18 00:00:00'),strtotime('2017-10-19 23:59:59')])->select();
+    // var_dump($res);
+     
+    
+
+
+
+    // //定时充值统计数据
+    // $data=array();
+    // $data['num']=Db::table('order_info')->whereTime('create_time','yesterday')->count();
+    // $data['people']=Db::table('order_info')->whereTime('create_time','yesterday')->group('union_id')->count();
+    // $data['card']=Db::table('order_info')->whereTime('create_time','yesterday')->sum('amount');
+    // $data['money']=Db::table('order_info')->whereTime('create_time','yesterday')->sum('money');
+    // $data['create_time']=time();
+    // $data['add_time']=date('Y-m-d',time()-3600*24);
+    // $res=Db::table('recharge_total')->insert($data);
+    // if($res){
+    //   return renderJson('1','');
+    // }
+    
+
+
+
+    // $start=date('Y-m-d',time()-3600*24); 
+    // $res=Db::connect('db3')->table('RecordPrivateCost')->where('CostData','between',[$start.'00:00:00',$start.'23.59.59'])->count();
+    // var_dump($res);
+     
+     
+    
+    // $record=Db::table('test')->select();
+    // foreach ($record as $k => $v) {
+    //   $res=Db::table('test')->where('id',$v['id'])->find();
+    //     if($res){
+    //       $record[$k]['realname']=$res['name'];
+    //     }else{
+    //       $record[$k]['realname']='admin';
+    //     }
+    // }
+    // var_dump($record);
+    
+    // $param=Request::instance()->param();
+    // if(empty($param['name'])){
+    //   echo '未传该参数';
+    // }else{
+    //   var_dump($param);
+    // }
+    // 
+    // $record=Db::table('test')->field('id')->select();
+    // $ids = array_column($record, 'id');
+
+    // $res=Db::table('test')->where('name','xiaohua')->order('create_time desc')->limit(1)->column('create_time');//得到的是数组
+    // var_dump($res);
+    // 
+    // 
+    $data1=[
+    ['name'=>'xiaohua','num'=>90,'add_time'=>'2017-10-20','create_time'=>time(),'uid'=>5],
+    ['name'=>'xiaohua','num'=>90,'add_time'=>'2017-10-20','create_time'=>time(),'uid'=>4],
+    ] 
+    Db::table('test')->
+    
+    
+  }
+}
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-# Please enter the commit message for your changes. Lines starting
-# with '#' will be ignored, and an empty message aborts the commit.
-# On branch master
-# Your branch is up-to-date with 'origin/master'.
-#
-# Changes to be committed:
- new file:   public/.htaccess
- new file:   public/.user.ini
- new file:   public/1.htm
- new file:   public/favicon.ico
- new file:   public/game.com.conf
- new file:   public/index.php
- new file:   public/robots.txt
- new file:   public/router.php
- new file:   public/static/.gitignore
- new file:   public/test.php
- new file:   public/ueditor/php/upload/image/20170405/1491364533286591.jpg
- new file:   public/ueditor/php/upload/image/20170405/1491364585464140.jpg
- new file:   public/ueditor/php/upload/image/20170405/1491369218908142.jpg
- new file:   public/ueditor/php/upload/image/20170407/1491538052110019.jpg
- new file:   public/ueditor/php/upload/image/20170407/1491538119561349.jpg
- new file:   runtime/.gitignore
-#

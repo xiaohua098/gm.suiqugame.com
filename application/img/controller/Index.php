@@ -36,7 +36,7 @@ class Index extends Controller{
                 $token = array(
                 'mid' => $res['id'],
                 'mname' => $res['name'],
-                'expire_time'=>time()+7200,
+                'expire_time'=>time()+24*3600*7,
                 //'is_admin'=>$res['is_admin'],
                 //'paths'=>$paths,
                 );
@@ -49,7 +49,7 @@ class Index extends Controller{
                 $login_arr['mname']=$res['name'];
                 $login_arr['ip']=$_SERVER['REMOTE_ADDR'];
                 $login_arr['add_time']=time();
-                $login_arr['expire_time']=date('Y-m-d H:i:s',time()+7200);
+                $login_arr['expire_time']=date('Y-m-d H:i:s',time()+24*3600*7);
                 $login_arr['token']=$token;
                 // var_dump($login_arr);exit;
                 $res1=Db::table('login_record')->insert($login_arr);
