@@ -154,7 +154,7 @@ class Test extends Controller{
     $res=Db::table('test')->where('name','xiaohua')->order('create_time desc')->limit(1)->column('create_time');//得到的是数组
     var_dump($res);
     
-    // 
+    echo '测试gitignore';
     
     
     
