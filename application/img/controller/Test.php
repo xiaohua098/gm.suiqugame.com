@@ -155,6 +155,7 @@ class Test extends Controller{
     var_dump($res);
     
     echo '测试gitignore';
+    echo '测试gitignore';
     
     
     
