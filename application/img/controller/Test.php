@@ -151,9 +151,9 @@ class Test extends Controller{
     // $record=Db::table('test')->field('id')->select();
     // $ids = array_column($record, 'id');
 
-    // $res=Db::table('test')->where('name','xiaohua')->order('create_time desc')->limit(1)->column('create_time');//得到的是数组
+    $res=Db::table('test')->where('name','xiaohua')->order('create_time desc')->limit(1)->column('create_time');//得到的是数组
     var_dump($res);
-    // 
+    
     // 
     
     
