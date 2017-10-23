@@ -104,3 +104,27 @@ Route::rule('test','img/Test/test');
 // //房卡消耗
 // Route::rule('card/expend','img/Card/cardExpend');
 // Route::rule('card/punch','img/Card/cardPunch');
+// 
+// 
+
+
+
+
+//每日统计数据接口
+
+//充值记录统计
+Route::rule('total/recharge','img/Statistic/recharge');
+//房卡产出统计
+Route::rule('total/punch','img/Statistic/punch');
+//房卡消耗数统计
+Route::rule('total/expend','img/Statistic/expend');
+//房卡库存统计
+Route::rule('total/stock','img/Statistic/stock');
+//代理每日数据
+Route::rule('total/daily','img/Statistic/daily');
+//玩家和代理统计
+Route::rule('total/user','img/Statistic/user');
+//总的统计
+Route::rule('total/census','img/Statistic/census');
+
+

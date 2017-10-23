@@ -68,6 +68,7 @@ class Statistic extends Controller{
 	    return renderJson('10000','操作失败');
 	}
 
+	//代理每日数据
 	public  function  daily(){
 		$data=array();
 		$agent=Db::table('account')->field('mssql_account_id')->where('level','>',0)->select();
@@ -81,6 +82,8 @@ class Statistic extends Controller{
 			$data[$k]['punch_num']=$punch_num;
 			$game_num=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$v)->whereTime('CostData','yesterday')->sum('CostValue');
 			$data[$k]['expend_num']=$punch_num+$game_num;
+			$data[$k]['add_time']=date('Y-m-d',time()-3600*24);
+			$data[$k]['create_time']=time();
 		}
 		$res=Db::tabel('agent_daily')->insert($data);
 		if($res){
@@ -133,19 +136,55 @@ class Statistic extends Controller{
 			}
 		}
 
-	}
-
-	//更新数据库
 	
-	foreach ($data as $k3 => $v3) {
-		$res1=Db::table('user')->where('uid',$v3['uid'])->find();
-		if($res1){
-			Db::table('user')->where('uid',$v3['uid'])->
+		//更新数据库
+		foreach ($data as $k3 => $v3) {
+			$res1=Db::table('user')->where('uid',$v3['uid'])->find();
+			if($res1){
+				Db::table('user')->where('id',$res['id'])->update($v3);
+			}else{
+				Db::table('user')->insert($v3);
+			}                       
 		}
 
+		return renderJson('1','操作成功');
+
+	}
+
+	//总的统计
+	
+	public  function   census(){
+		//GM划卡总数
+		$h_gmcard=Db::table('punch_card')->sum('num');
+		$sys=;//系统赠送
+		$recharge_num=Db::table('order_info')->sum('amount');
+		//历史房卡产出数
+		$c_card=$h_gmcard+$sys+$recharge_num;
+		//历史房卡消耗数
+		$s_card=Db::connect('db3')->table('RecordPrivateCost')->where('state','>',0)->sum('CostValue');
+		//历史充值
+		$h_recharge=Db::table('order_info')->where('state','>',0)->sum('money');
+		//今日充值
+		$d_recharge=Db::table('order_info')->where('state','>',0)->whereTime('create_time','yesterday')->sum('money');
+		//今日GM划卡数
+		$d_gmcard=Db::table('punch_card')->whereTime('add_time','yesterday')->sum('num');
+
+		$res=Db::table('census')->insert([
+			'h_gmcard'=>$h_gmcard,
+			'c_card'=>$c_card,
+			's_card'=>$s_card,
+			'h_recharge'=>$h_recharge,
+			'd_recharge'=>$d_recharge,
+			'd_gmcard'=>$d_gmcard,
+			'create_time'=>time(),
+			'add_time'=>date('Y-m-d',time()-3600*24),
+			]);
+		if($res){
+	      return renderJson('1','');
+	    }
+	    return renderJson('10000','操作失败');
+
 	}
 	
-
-
 
 }

@@ -20,14 +20,15 @@ class Card extends Com{
            unset($data['type']);
            return  $this->punchAll($data);
         }
+        //某用户消耗房卡记录
+        if(Request::instance()->isGet()){
+            $data=Request::instance()->param();
+           return  $this->cardList($data);
+        }
+        //导出某用户消耗房卡记录
         if(Request::instance()->isPut()){
             $data=Request::instance()->param();
-            if($data['type']==1){
-                unset($data['type']);
-                return  $this->punchOne($data);
-            }
-           unset($data['type']);
-           return  $this->punchAll($data);
+           return  $this->exportList($data);
         }
         $param=$data;
         $model=new pub;
@@ -138,5 +139,80 @@ class Card extends Com{
                 return renderJson('10002','操作失败');
             } 
             return renderJson('1','操作成功');
-    }             
+    }  
+
+    public  function  cardList(){
+        if(empty($data['uid']) && empty($data['phone'])){
+            return renderJson('10001','参数不合法');
+        }
+        if(!empty($data['uid'])){
+            $uid=$data['uid'];
+            $phone=Db::table('account')->where('mssql_account_id',$data['uid'])->column('phone');
+        }
+        if(!empty($data['phone'])){
+                $phone=$data['phone'];
+                $uid=Db::table('account')->where('phone',$data['phone'])->column('mssql_account_id');
+        }
+        if(isset($data['start_time']) && isset($data['end_time'])){
+            $start=$data['start_time'];
+            $end=$data['end_time'];
+            $total=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('CostData','between ',[$start,$end])->count();
+            if($offset == 0){
+                $record=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('CostData','between ',[$start,$end])->order('CostData','desc')->limit($pagesize)->select();
+                return renderJson('1','',['record'=>$record,'total'=>$total]);
+            }
+            $temple=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('CostData','between ',[$start,$end])->order('CostData','desc')->limit($offset)->select();
+            $tid=array_pop($temple);
+            $record=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('CostData','between ',[$start,$end])->where('id','<=',$tid['id'])->order('CostData','desc')->limit($pagesize)->select();
+        
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            return renderJson('1','',['record'=>$record,'total'=>$total]);
+        }
+
+        $total=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->count();
+        if($offset == 0){
+            $record=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->order('CostData','desc')->limit($pagesize)->select();
+            return renderJson('1','',['record'=>$record,'total'=>$total]);
+        }
+        $temple=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->order('CostData','desc')->limit($offset)->select();
+        $tid=array_pop($temple);
+        $record=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('id','<=',$tid['id'])->order('CostData','desc')->limit($pagesize)->select();
+        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        return renderJson('1','',['record'=>$record,'total'=>$total]);
+        
+    } 
+
+
+    public  function  exportList(){
+        if(isset($data['uid']) ||  isset($data['phone'])){
+            if(isset($data['uid'])){
+                $uid=$data['uid'];
+                $phone=Db::table('account')->where('mssql_account_id',$data['uid'])->column('phone');
+            }
+            if(isset($data['phone'])){
+                $phone=$data['phone'];
+                $uid=Db::table('account')->where('phone',$data['phone'])->column('mssql_account_id');
+            }
+           if(isset($data['start_time']) && isset($data['end_time'])){
+            $start=$data['start_time'];
+            $end=$data['end_time'];
+            $total=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('CostData','between ',[$start,$end])->count();
+            $record=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('CostData','between ',[$start,$end])->where('id','<=',$tid['id'])->order('CostData','desc')->select();
+        
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            return renderJson('1','',['record'=>$record,'total'=>$total]);
+        }
+
+        $total=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->count();
+        
+        $record=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->order('CostData','desc')->select();
+        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        return renderJson('1','',['record'=>$record,'total'=>$total]);
+        }
+        return renderJson('10001','参数不合法');
+    }                   
 }

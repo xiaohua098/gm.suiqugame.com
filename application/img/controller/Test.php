@@ -155,12 +155,7 @@ class Test extends Controller{
     // var_dump($res);
     // 
     // 
-    // $data1=[
-    // ['name'=>'xiaohua','num'=>90,'add_time'=>'2017-10-20','create_time'=>time(),'uid'=>5],
-    // ['name'=>'xiaohua','num'=>90,'add_time'=>'2017-10-20','create_time'=>time(),'uid'=>4],
-    // ] 
-    $res=Db::connect('db1')->table('GameScoreInfo')->find();
-    var_dump($res);
+    
     
     
   }
