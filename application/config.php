@@ -259,8 +259,8 @@ return [
     // 数据库配置1
     'db1'   =>  [
         // 数据库类型
-        // 'type'     => 'Sqlsrv',
-        'type'     => 'dblib',
+        'type'     => 'Sqlsrv',
+        // 'type'     => 'dblib',
         // 服务器
         'hostname' => 'www.wggame.top',
         // 数据库名
@@ -282,8 +282,8 @@ return [
     // 数据库配置2
     'db2'   =>  [
          // 数据库类型
-        // 'type'     => 'Sqlsrv',
-        'type'     => 'dblib',
+        'type'     => 'Sqlsrv',
+        // 'type'     => 'dblib',
         // 服务器
         'hostname' => 'www.wggame.top',
         // 数据库名
@@ -305,8 +305,8 @@ return [
     // 数据库配置3
     'db3'   =>  [
          // 数据库类型
-        // 'type'     => 'Sqlsrv',
-        'type'     => 'dblib',
+        'type'     => 'Sqlsrv',
+        // 'type'     => 'dblib',
         // 服务器
         'hostname' => 'www.wggame.top',
         // 数据库名

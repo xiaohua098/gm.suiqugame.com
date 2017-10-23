@@ -48,18 +48,6 @@ Route::rule('auth','img/Auth/auth');
 
 
 
-//公告和跑马灯
-// Route::rule('notice/add','img/Message/noticeAdd');
-// Route::rule('notice/del','img/Message/noticeDel');
-// Route::rule('notice/list','img/Message/noticeList');
-// Route::rule('notice/content','img/Message/noticeContent');
-// Route::rule('horse/add','img/Message/horseAdd');
-// Route::rule('horse/del','img/Message/horseDel');
-// Route::rule('horse/list','img/Message/horseList');
-// Route::rule('horse/content','img/Message/horseContent');
-
-
-
 
 Route::rule('notices','img/Message/notices');
 Route::rule('horse','img/Message/horse');

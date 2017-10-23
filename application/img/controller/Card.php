@@ -20,6 +20,15 @@ class Card extends Com{
            unset($data['type']);
            return  $this->punchAll($data);
         }
+        if(Request::instance()->isPut()){
+            $data=Request::instance()->param();
+            if($data['type']==1){
+                unset($data['type']);
+                return  $this->punchOne($data);
+            }
+           unset($data['type']);
+           return  $this->punchAll($data);
+        }
         $param=$data;
         $model=new pub;
         //写入日志
@@ -38,7 +47,7 @@ class Card extends Com{
             $uid=explode(',',$uid);//$uid='1';是数组
             // var_dump($uid);exit;
             $num=$data['num'];
-            $abs_num=$abs($num);
+            $abs_num=abs($num);
             if($abs_num>2147483647){
                 return renderJson('10001','参数不合法');
             }
@@ -87,7 +96,7 @@ class Card extends Com{
     //房卡全服发放
     public function punchAll($data){ 
             $num=$data['num'];
-            $abs_num=$abs($num);
+            $abs_num=abs($num);
             if($abs_num>2147483647){
                 return renderJson('10001','参数不合法');
             }
