@@ -152,7 +152,7 @@ class Test extends Controller{
     // $ids = array_column($record, 'id');
 
     // $res=Db::table('test')->where('name','xiaohua')->order('create_time desc')->limit(1)->column('create_time');//得到的是数组
-    // var_dump($res);
+    var_dump($res);
     // 
     // 
     
