@@ -11,7 +11,7 @@ class Message extends Com{
         $flag=$this->flag;
         // var_dump($flag);exit;
         if($flag){
-             return renderJson('10001','token为空或者token已经过期');
+             return renderJson('10007','token为空或者token已经过期');
         }
         if (Request::instance()->isGet()){
             $data=Request::instance()->param();
@@ -34,9 +34,9 @@ class Message extends Com{
         };
         $param=$data;
         $model=new pub;
-        //写入日志
-        $data=Request::instance()->param();
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
+        // //写入日志
+        // $data=Request::instance()->param();
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
         return renderJson('101','违法操作');
     }
 

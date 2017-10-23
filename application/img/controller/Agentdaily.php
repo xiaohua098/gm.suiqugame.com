@@ -9,7 +9,7 @@ class Agentdaily extends Com{
     public function  agentdaily(){
         $flag=$this->flag;
         if($flag){
-             return renderJson('10001','token为空或者token已经过期');
+             return renderJson('10007','token为空或者token已经过期');
         }
         //获取代理列表
         if (Request::instance()->isGet()){
@@ -36,9 +36,9 @@ class Agentdaily extends Com{
 
         $param=$data;
         $model=new pub;
-        //写入日志
-        $data=Request::instance()->param();
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
+        // //写入日志
+        // $data=Request::instance()->param();
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
         return renderJson('101','违法操作');
     }
 
@@ -67,21 +67,21 @@ class Agentdaily extends Com{
             $tid=array_pop($temple);
             $record=Db::table('agent_daily')->where('uid',$uid)->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
         
-            //写入日志
-            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
         $total=Db::table('agent_daily')->where('uid',$uid)->where('add_time','between ',[$start,$end])->count();
         if($offset == 0){
-            $record=Db::table('agent_daily')->where('uid',$uid)->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
+            $record=Db::table('agent_daily')->where('uid',$uid)->order('add_time','desc')->limit($pagesize)->select();
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
-        $temple=Db::table('agent_daily')->where('uid',$uid)->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset)->select();
+        $temple=Db::table('agent_daily')->where('uid',$uid)->order('add_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
-        $record=Db::table('agent_daily')->where('uid',$uid)->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
-        //写入日志
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        $record=Db::table('agent_daily')->where('uid',$uid)->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
     }
 
@@ -99,14 +99,14 @@ class Agentdaily extends Com{
             $end=$data['end_time'];
             $total=Db::table('agent_daily')->where('uid',$uid)->where('add_time','between',[$start,$end])->count();
             $record=Db::table('agent_daily')->where('uid',$uid)->where('add_time','between',[$start,$end])->order('add_time','desc')->select();
-            //写入日志
-            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
         $total=Db::table('agent_daily')->where('uid',$uid)->count();
         $record=Db::table('agent_daily')->where('uid',$uid)->order('add_time','desc')->select();
-        //写入日志
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
     }
 

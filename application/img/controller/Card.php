@@ -8,7 +8,7 @@ class Card extends Com{
     public function  card(){
         $flag=$this->flag;
         if($flag){
-            return renderJson('10001','token为空或者token已经过期');
+            return renderJson('10007','token为空或者token已经过期');
         }
         // 是否为 POST 请求
         if(Request::instance()->isPost()){
@@ -32,9 +32,9 @@ class Card extends Com{
         }
         $param=$data;
         $model=new pub;
-        //写入日志
-        $data=Request::instance()->param();
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
+        // //写入日志
+        // $data=Request::instance()->param();
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
         return renderJson('101','违法操作');
     }
 
@@ -165,8 +165,8 @@ class Card extends Com{
             $tid=array_pop($temple);
             $record=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$uid)->where('CostData','between ',[$start,$end])->where('id','<=',$tid['id'])->order('CostData','desc')->limit($pagesize)->select();
         
-            //写入日志
-            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 

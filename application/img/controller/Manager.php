@@ -22,7 +22,7 @@ class Manager extends Com{
     public function  manager(){
         $flag=$this->flag;
         if($flag){
-             return renderJson('10001','token为空或者token已经过期');
+             return renderJson('10007','token为空或者token已经过期');
         }
         // if (Request::instance()->isGet()){
         //     $data=Request::instance()->param();
@@ -45,9 +45,9 @@ class Manager extends Com{
         // };
         // $param=$data;
         $model=new pub;
-        //写入日志
-        $data=Request::instance()->param();
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
+        // //写入日志
+        // $data=Request::instance()->param();
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
         return renderJson('101','违法操作');
     }
 
@@ -161,37 +161,5 @@ class Manager extends Com{
             return renderJson('10000','密码修改失败');
     }
 
-    // //短信验证 
-    // public function verifi(){
-    //   //短信验证
-    //     include('../api/TopSdk.php');
-    //     if(Request::instance()->isPost()){
-    //      $phone=Request::instance()->post('phone');
-    //      }
-    //       $products='个人';
-    //      if(empty($phone)){
-    //        return renderJson('100','参数不合法');
-    //      }
-    //     $code=rand(1000,9999);
-    //     $c=new \TopClient;
-    //     $c->appkey ='23696713';
-    //     $c->secretKey ='fff78fe6e47b19adf7c1b807ba55221d';
-    //     $c->format = 'json';
-    //     $req = new \AlibabaAliqinFcSmsNumSendRequest;
-    //     $req->setExtend($code);
-    //     Session::set('sms_code',$code);
-    //     $req->setSmsType("normal");
-    //     $req->setSmsFreeSignName("定制神器");
-    //     $req->setSmsParam("{\"code\":\"$code\",\"product\":\"$products\"}");
-    //     $req->setRecNum($phone);
-    //     $req->setSmsTemplateCode("SMS_52125510 ");
-    //     $resp = $c->execute($req);
-    //     if(!empty($resp->result->success)){
-    //     return $resp->result->success;
-    //     }else{
-    //       return renderJson('107','短信发送失败');
-    //   }
-    //     }
-    //   return renderJson('200','短信发送成功');
-    // }
+   
 }

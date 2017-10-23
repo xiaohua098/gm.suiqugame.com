@@ -135,7 +135,6 @@ class Statistic extends Controller{
 				$data[$k]['punch_time']=$create_time;
 			}
 		}
-
 	
 		//更新数据库
 		foreach ($data as $k3 => $v3) {
@@ -152,7 +151,6 @@ class Statistic extends Controller{
 	}
 
 	//总的统计
-	
 	public  function   census(){
 		//GM划卡总数
 		$h_gmcard=Db::table('punch_card')->sum('num');
@@ -183,7 +181,6 @@ class Statistic extends Controller{
 	      return renderJson('1','');
 	    }
 	    return renderJson('10000','操作失败');
-
 	}
 	
 

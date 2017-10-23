@@ -151,11 +151,11 @@ class Test extends Controller{
     // $record=Db::table('test')->field('id')->select();
     // $ids = array_column($record, 'id');
 
-    $res=Db::table('test')->where('name','xiaohua')->order('create_time desc')->limit(1)->column('create_time');//得到的是数组
-    var_dump($res);
+    $start=date('Y-m-d 00:00:00',time()-3600*24);
+    $end=date('Y-m-d 23:59:59',time()-3600*24);
     
-    echo '测试gitignore';
-    echo '测试gitignore';
+    $res=Db::connect('db3')->table('RecordPrivateCost')->where('CostDate','between',[$start,$end])->select();
+    var_dump($res);
     
     
     
