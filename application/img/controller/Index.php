@@ -10,6 +10,11 @@ class Index extends Controller{
     public function index(){
          if(Request::instance()->isPost()){
             $data=Request::instance()->post();
+            if(empty($data['name']) || empty($data['pwd'])){
+                // //写入日志
+        // $model->saveRecord(0,$data['name'],'GM登录',json_encod($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
+              return  renderJson('10001','参数不合法');
+            }
             $model=new pub;
             $param=$data;
             $res=Db::table('manager')->where('name',$data['name'])->find();
@@ -24,7 +29,7 @@ class Index extends Controller{
                 //{
                     //$paths='';
                 //}else{
-                  // $paths=Db::table('role')->where('id',$res['role_id'])->column('paths');
+                  // $paths=Db::table('role')->where('id',$res['role_id'])->value('paths');
                 //   $paths=explod(',',$paths);
                 //}                
                 //JWT加密

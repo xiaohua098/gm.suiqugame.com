@@ -87,7 +87,7 @@ class Card extends Com{
             //减房卡时判断用户剩余房卡
             if($num<0){
                 foreach($uid as $k1=>$v1){
-                    $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1)->column('InsureScore');
+                    $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1)->value('InsureScore');
                     if($card_num<$abs_num){
                         // //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']));
@@ -140,7 +140,7 @@ class Card extends Com{
             //减房卡时判断用户剩余房卡
             if($num<0){
                 foreach($user as $k1=>$v1){
-                    $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1['uid'])->column('InsureScore');
+                    $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1['uid'])->value('InsureScore');
                     if($card_num<$abs_num){
                         // //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']));
@@ -189,11 +189,11 @@ class Card extends Com{
         
         if($data['uid']){
             $uid=$data['uid'];
-            $phone=Db::table('account')->where('mssql_account_id',$data['uid'])->column('phone');
+            $phone=Db::table('account')->where('mssql_account_id',$data['uid'])->value('phone');
         }
         if($data['phone']){
                 $phone=$data['phone'];
-                $uid=Db::table('account')->where('phone',$data['phone'])->column('mssql_account_id');
+                $uid=Db::table('account')->where('phone',$data['phone'])->value('mssql_account_id');
         }
         if(isset($data['start_time']) && isset($data['end_time']) && $data['start_time'] && $data['end_time']){
             $start=date('Y-m-d H:i:s',$data['start_time']);
@@ -238,11 +238,11 @@ class Card extends Com{
         if(isset($data['uid']) ||  isset($data['phone'])){
             if(isset($data['uid'])){
                 $uid=$data['uid'];
-                $phone=Db::table('account')->where('mssql_account_id',$data['uid'])->column('phone');
+                $phone=Db::table('account')->where('mssql_account_id',$data['uid'])->value('phone');
             }
             if(isset($data['phone'])){
                 $phone=$data['phone'];
-                $uid=Db::table('account')->where('phone',$data['phone'])->column('mssql_account_id');
+                $uid=Db::table('account')->where('phone',$data['phone'])->value('mssql_account_id');
             }
            if(isset($data['start_time']) && isset($data['end_time']) && $data['start_time'] && $data['end_time']){
             $start=date('Y-m-d H:i:s',$data['start_time']);

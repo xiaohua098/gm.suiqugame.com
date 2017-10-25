@@ -157,13 +157,37 @@ class Test extends Controller{
     // $res=Db::connect('db3')->table('RecordPrivateCost')->where('CostDate','>',date('Y-m-d',strtotime('2017-10-22 23:59:59')))->select();
     // var_dump($res);
      
-    
- Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Notice_20')->delete();
+   //  $data['content']='测试paoma';
+   // $data['add_time']=time();
+   //          $data['mid']=3;
+   //          $data['mname']='要你命三千';
+   //          $data['type']=2;
+   //          $data['is_del']=1;
+   //          $temple=strip_tags($data['content']);
+   //          $temple=str_replace('&nbsp;', '  ', $temple);
+   //          $data['title']=mb_substr($temple,0,15,'utf-8').'...';
+   //          // $res=Db::table('message')->insert($data);
+   //          // var_dump($res);
+            
+   //          // $res=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Paoma')->delete();
+   //          // var_dump($res);
+   //          // $data1=array();
+   //          $data1['StatusName']='JYMJ_Paoma';
+   //          $data1['StatusValue']='1';
+   //          $data1['StatusString']=$data['content'];
+   //          // $res=Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
+   //          // var_dump($res);
+   //          // 
+   //          $res=Db::table('message')->where('type',2)->update(['is_del'=>0]);
+   //          var_dump($res);
+   $data=__STATE__;
+   var_dump($data);
+}
 
 
 
 
-  }
+
 
 
 

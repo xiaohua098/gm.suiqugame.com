@@ -76,7 +76,7 @@ class Agent extends Com{
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
 
-        $total=Db::table('user')->count();
+        $total=Db::table('user')->where('level','>',0)->count();
         if($offset == 0){
             $record=Db::table('user')->where('level','>',0)->order('add_time','desc')->limit($pagesize)->select();
             // //写入日志

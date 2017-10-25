@@ -48,7 +48,7 @@ class Price extends Com{
         $param=$data;
         $model=new pub;
         if(isset($data['level']) && isset($data['price']) && $data['price']){
-            if($data['level']<0 || $data['level']>3 || $data['ptice']>2147483647 || $data['price']<0 ){
+            if($data['level']<0 || $data['level']>3 || abs($data['ptice'])>2147483647 || $data['price']<0 ){
                 // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
                 return renderJson('10001','参数不合法');

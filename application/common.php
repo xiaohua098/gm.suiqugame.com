@@ -20,4 +20,7 @@ function  renderJson($code,$message='',$data=''){
 }
 
 
+define('__STATE__',1);
+
+
 

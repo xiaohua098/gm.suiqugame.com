@@ -31,10 +31,10 @@ class Census extends Com{
 	public  function censusList($data){
 		$param=$data;
         $model=new pub;
-		$res=Db::table('total_record')->order('create_time desc')->find();
+		$record=Db::table('total_record')->order('create_time desc')->find();
 		// //写入日志
   //       $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'']));
-		return renderJson('1','',['data'=>$res]);
+		return renderJson('1','',['record'=>$record]);
 	}
 
     

@@ -38,39 +38,11 @@ class Auth extends Com{
         if (Request::instance()->isDelete()){
            $data=Request::instance()->param();
            return  $this->authDel($data);
-        };
+        }
 
        
     }
 
-
-    //权限列表
-    public function authList($data){
-        
-        $param=$data;
-        $model=new pub;
-
-        if(isset($data['id']) && is_numeric($data['id'])){
-            $auth=Db::table('auth')->where('id',$data['id'])->find();
-        //     //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-            return renderJson('1','',[0=>$auth]);
-        }
-        if(empty($data['pagesize'])){
-        //     //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
-            return renderJson('10001','参数不能为空');
-        }
-
-
-        if(isset($data['pid']) && $data['pid'] == '0'){
-             $auth=Db::name('Auth')->where('pid',0)->select();
-        //      //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-             return renderJson('1','',['auth'=>$auth]);
-        }
-
-
     //权限列表
     public function authList($data){
         $param=$data;
@@ -78,37 +50,36 @@ class Auth extends Com{
         
         if(isset($data['id']) && is_numeric($data['id'])){
             $auth=Db::table('auth')->where('id',$data['id'])->find();
-            $auth['content'] = htmlspecialchars_decode($auth['content']);
-            return renderJson('1','',[0=>$auth]);
+            //     //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+            return renderJson('1','',['record'=>$auth]);
         }
-        if(empty($data['pagesize'])){
-            return renderJson('10001','参数不能为空');
-        }
+        
+        if(isset($data['offset']) && isset($data['pagesize']) && $data['pagesize']){
+            $offset=$data['offset'];
+            $pagesize=$data['pagesize'];
+            $total=Db::table('auth')->count();
+            if($offset == 0){
+                $auth=Db::table('auth')->order('add_time','desc')->limit($pagesize)->select();
 
-        $offset=$data['offset'];
-        $pagesize=$data['pagesize'];
-        $total=Db::table('auth')->count();
-        if($offset == 0){
-            $auth=Db::table('auth')->order('add_time','desc')->limit($pagesize)->select();
+            //     //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+                return renderJson('1','',['auth'=>$auth,'total'=>$total]);
+            }
+            $temple=Db::table('auth')->order('add_time','desc')->limit($offset)->select();
+            $tid=array_pop($temple);
+            $auth=Db::table('auth')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
 
-        //     //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+            
             return renderJson('1','',['auth'=>$auth,'total'=>$total]);
         }
-        $temple=Db::table('auth')->order('add_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $auth=Db::table('auth')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
-
-        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-        
-        $res=$model->saveRecord($this->mid,$this->mname,$this->path,json_encode($data),json_encode(['code'=>'1','message'=>'','data'=>['auth'=>$auth,'total'=>$total]]));
-        
-        if(!$res){
-            return renderJson('10010','日志写入错误');
-        }
-
-        return renderJson('1','',['auth'=>$auth,'total'=>$total]);
+        $total=Db::table('auth')->count();
+        $auth=Db::table('auth')->order('add_time','desc')->select();
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+        return renderJson('1','',['auth'=>$auth,'total'=>$total]); 
     }
     //添加权限
     public function authAdd($data){
@@ -119,8 +90,14 @@ class Auth extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法'));
                 return renderJson('10001','参数不合法');
         }
-            $data['add_time']=$data['upd_time']=time();
-            $res=Db::name('auth')->insert($data);
+            $res=Db::name('auth')->insert([
+                'title'=>$data['title'],
+                'path'=>$data['path'],
+                'pid'=>$data['pid'],
+                'is_show'=>$data['is_show'],
+                'add_time'=>time(),
+                'upd_time'=>time(),
+            ]);
             if($res){
         //         //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'添加成功']));
@@ -139,8 +116,13 @@ class Auth extends Com{
            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
             return renderJson('10001','参数不能为空');
         }
-        $data['upd_time']=time();
-        $res=Db::name('auth')->where('id',$data['id'])->update($data);
+        $res=Db::name('auth')->where('id',$data['id'])->update([
+            'upd_time'=>time(),
+            'path'    =>$data['path'],
+            'is_show' =>$data['is_show'],
+            'title'   =>$data['title'],
+            'pid'     =>$data['pid']
+            ]);
         if($res){
            //  //写入日志
            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
@@ -157,7 +139,7 @@ class Auth extends Com{
             if(isset($data['id'] && is_numeric($data['id']))){
                 $res=Db::name('auth')->where('id',$data['id'])->delete($data);
                 if($res){
-           //           //写入日志
+                      //写入日志
            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
                     return renderJson('1','');
                 }

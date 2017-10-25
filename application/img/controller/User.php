@@ -76,7 +76,7 @@ class User extends Com{
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
 
-        $total=Db::table('user')->count();
+        $total=Db::table('user')->where('level',0)->count();
         if($offset == 0){
             $record=Db::table('user')->order('add_time','desc')->where('level',0)->limit($pagesize)->select();
             // //写入日志

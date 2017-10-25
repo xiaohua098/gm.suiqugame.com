@@ -31,8 +31,6 @@ class Agentdaily extends Com{
             $data=Request::instance()->param();
            return  $this->exportList($data);
         }
-        
-
        
     }
 

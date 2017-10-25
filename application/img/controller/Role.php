@@ -52,26 +52,28 @@ class Role extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',[0=>$role]);
         }
-        if(empty($data['pagesize'])){
-        //     //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
-            return renderJson('10001','参数不能为空');
-        }
-        $offset=$data['offset'];
-        $pagesize=$data['pagesize'];
-        $total=Db::table('role')->count();
-        if($offset == 0){
-            $role=Db::table('role')->order('add_time','desc')->limit($pagesize)->select();
-        //     //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+         $total=Db::table('role')->count();
+        if(isset($data['pagesize']) &&  isset($data['offset']) &&  $data['pagesize']){
+            $offset=$data['offset'];
+            $pagesize=$data['pagesize'];
+            if($offset == 0){
+                $role=Db::table('role')->order('add_time','desc')->limit($pagesize)->select();
+            //     //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+                return renderJson('1','',['role'=>$role,'total'=>$total]);
+            }
+            $temple=Db::table('role')->order('add_time','desc')->limit($offset)->select();
+            $tid=array_pop($temple);
+            $role=Db::table('role')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['role'=>$role,'total'=>$total]);
         }
-        $temple=Db::table('role')->order('add_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $role=Db::table('role')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        $role=Db::table('role')->order('add_time','desc')->select();
         // //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
         return renderJson('1','',['role'=>$role,'total'=>$total]);
+        
     }
     //添加角色
     public function roleAdd($data){

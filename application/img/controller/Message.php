@@ -44,8 +44,8 @@ class Message extends Com{
     }
 
     public function  horse(){
-        $param=$data;
         $model=new pub;
+        $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag){
             return renderJson('10001','token为空或者token已经过期');
@@ -72,76 +72,49 @@ class Message extends Com{
         $param=$data;
         $model=new pub;
 
+        if(isset($data['content']) && isset($data['title']) && $data['content']  && $data['title']){
 
-        // $data['add_time']=time();
-        // $data['mid']=$this->mid;
-        // $data['mname']=$this->mname;
-        // $data['type']=1;
-        // $data['is_del']=1;
-        // $data1=array();
-        // $data1['StatusName']='JYMJ_Notice';
-        // $data1['StatusValue']='1';
-        // $data1['StatusString']=$data['content'];
-        // // 启动事务
-        //     Db::startTrans();
-        //     try{
-        //         //关闭原来的公告
-        //         Db::table('message')->where('type',1)->update(['is_del'=>0]);
-        //         //操作mysql
-        //         Db::table('message')->insert($data);
-        //         //操作sqlsrv
-        //         Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Notice')->delete();
-        //         Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
-        //         // 提交事务
-        //         Db::commit();    
-        //     } catch (\Exception $e) {
-        //         // 回滚事务
-        //         Db::rollback();
-        //         // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
-        //         return renderJson('10002','操作失败');
-        //     }
-        //     // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-        //     return renderJson('1','');
-
-
-
-
-
-
-
-        	//关闭原来的公告
-        	$res=Db::table('message')->where('type',1)->where('is_del',1)->find();
-        	if($res){
-        		Db::table('message')->where('type',1)->update(['is_del'=>0]);
-        	}
-        	$data['add_time']=time();
-            $data['mid']=$this->mid;
-        	$data['mname']=$this->mname;
-            $data['type']=1;
-        	$data['is_del']=1;
-        	$res1=Db::table('message')->insert($data);
-        	if(!$res1){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'操作失败']));
-        		return renderJson('10000','操作失败');
-        	}
-        	//操作sqlsrv
-            Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Notice')->delete();
-            $data1=array();
-            $data1['StatusName']='JYMJ_Notice';
-            $data1['StatusValue']='1';
-            $data1['StatusString']=$data['content'];
-            $res3=Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
-        	if(!$res3){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
+             $data2['add_time']=time();
+        $data2['mid']=$this->mid;
+        $data2['mname']=$this->mname;
+        $data2['type']=1;
+        $data2['is_del']=1;
+        $data2['title']=$data['title'];
+        $data2['content']=$data['content'];
+        $data1=array();
+        $data1['StatusName']='JYMJ_Notice';
+        $data1['StatusValue']='1';
+        $data1['StatusString']=$data['content'];
+        
+        // 启动事务
+            Db::startTrans();
+            try{
+                //关闭原来的公告
+                Db::table('message')->where('type',1)->update(['is_del'=>0]);
+                //操作mysql
+                Db::table('message')->insert($data2);
+                //操作sqlsrv
+                Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Notice')->delete();
+                Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
+                // 提交事务
+                Db::commit();    
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
                 return renderJson('10002','操作失败');
             }
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-        	return renderJson('1','');
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+            return renderJson('1','');
+
+
+        }
+       // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
+       return  renderJson('10001','参数不合法');
+        	
     }
     public  function  noticeDel($data){
         $param=$data;
@@ -153,46 +126,28 @@ class Message extends Com{
             }
             $id=$data['id'];
 
-            // // 启动事务
-        //     Db::startTrans();
-        //     try{
-        //        
-        //         //操作mysql
-        //        Db::table('message')->where('id',$id)->update(['is_del'=>0]);
-        //         //操作sqlsrv
-        //        Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Notice')->delete();
-        //  
-        //         // 提交事务
-        //         Db::commit();    
-        //     } catch (\Exception $e) {
-        //         // 回滚事务
-        //         Db::rollback();
-        //         // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
-        //         return renderJson('10002','操作失败');
-        //     }
-        //     // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-        //     return renderJson('1','');
-
-
-
-
-            $res=Db::table('message')->where('id',$id)->update(['is_del'=>0]);
-            if(!$res){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'操作失败']));
-                return renderJson('10000','操作失败');
-            }
-            $res1=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Notice')->delete();
-            if(!$res1){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
+            // 启动事务
+            Db::startTrans();
+            try{
+               
+                //操作mysql
+               Db::table('message')->where('id',$id)->update(['is_del'=>0]);
+                //操作sqlsrv
+               Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Notice')->delete();
+         
+                // 提交事务
+                Db::commit();    
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
                 return renderJson('10002','操作失败');
             }
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','');
+
     }
     public  function  noticeList($data){
         $param=$data;
@@ -238,82 +193,50 @@ class Message extends Com{
         $param=$data;
         $model=new pub;
 
+        if(isset($data['content']) && $data['content']){
 
-        // $data['add_time']=time();
-        //     $data['mid']=$this->mid;
-        //     $data['mname']=$this->mname;
-        //     $data['type']=2;
-        //     $data['is_del']=1;
-        //     $temple=strip_tags($data['content']);
-        //     $temple=str_replace('&nbsp;', '  ', $temple);
-        //     $data['title']=mb_substr($temple,0,15,'utf-8').'...';
-        // $data1=array();
-        //     $data1['StatusName']='JYMJ_Paoma';
-        //     $data1['StatusValue']='1';
-        //     $data1['StatusString']=$data['content'];
-        //  // 启动事务
-        //     Db::startTrans();
-        //     try{
-        //         //关闭原来的跑马灯
-        //         Db::table('message')->where('type',2)->update(['is_del'=>0]);
-        //         //操作mysql
-        //         Db::table('message')->insert($data);
-        //         //操作sqlsrv
-        //         Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Paoma')->delete();
-        //         Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
-        //         // 提交事务
-        //         Db::commit();    
-        //     } catch (\Exception $e) {
-        //         // 回滚事务
-        //         Db::rollback();
-        //         // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
-        //         return renderJson('10002','操作失败');
-        //     }
-        //     // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-        //     return renderJson('1','');
-
-
-
-
-            //关闭原来的跑马灯
-            $res=Db::table('message')->where('type',2)->where('is_del',1)->find();
-            if($res){
-                Db::table('message')->where('type',2)->update(['is_del'=>0]);
-            }
-            $data['add_time']=time();
-            $data['mid']=$this->mid;
-            $data['mname']=$this->mname;
-            $data['type']=2;
-            $data['is_del']=1;
+            $data2['add_time']=time();
+            $data2['mid']=$this->mid;
+            $data2['mname']=$this->mname;
+            $data2['type']=2;
+            $data2['is_del']=1;
             $temple=strip_tags($data['content']);
             $temple=str_replace('&nbsp;', '  ', $temple);
-            $data['title']=mb_substr($temple,0,15,'utf-8').'...';
-            $res1=Db::table('message')->insert($data);
-            $m_id = Db::name('message')->getLastInsID();
-            if(!$res1){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'操作失败']));
-                return renderJson('10000','操作失败');
-            }
-            //操作sqlsrv
-            Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Paoma')->delete();
-        
-            $data1=array();
+            $data2['title']=mb_substr($temple,0,15,'utf-8').'...';
+            $data2['content']=$data['content'];
+        $data1=array();
             $data1['StatusName']='JYMJ_Paoma';
             $data1['StatusValue']='1';
             $data1['StatusString']=$data['content'];
-            $res3=Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
             
-            if(!$res3){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
+         // 启动事务
+            Db::startTrans();
+            try{
+                //关闭原来的跑马灯
+                Db::table('message')->where('type',2)->update(['is_del'=>0]);
+                //操作mysql
+                Db::table('message')->insert($data2);
+                //操作sqlsrv
+                Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Paoma')->delete();
+                Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
+                // 提交事务
+                Db::commit();    
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
                 return renderJson('10002','操作失败');
             }
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','');
+
+
+        }
+        // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
+        return  renderJson('10001','参数不合法');
     }
 
 
@@ -328,47 +251,28 @@ class Message extends Com{
             $id=$data['id'];
 
 
-             // // 启动事务
-        //     Db::startTrans();
-        //     try{
-        //        
-        //         //操作mysql
-        //        Db::table('message')->where('id',$id)->update(['is_del'=>0]);
-        //         //操作sqlsrv
-        //        Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Paoma')->delete();
-        //  
-        //         // 提交事务
-        //         Db::commit();    
-        //     } catch (\Exception $e) {
-        //         // 回滚事务
-        //         Db::rollback();
-        //         // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
-        //         return renderJson('10002','操作失败');
-        //     }
-        //     // //写入日志
-        // // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-        //     return renderJson('1','');
-
-
-
-
-            
-            $res=Db::table('message')->where('id',$id)->update(['is_del'=>0]);
-            if(!$res){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'操作失败']));
-                return renderJson('10000','操作失败');
-            }
-            $res1=Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Paoma')->delete();
-            if(!$res1){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
+             // 启动事务
+            Db::startTrans();
+            try{
+               
+                //操作mysql
+               Db::table('message')->where('id',$id)->update(['is_del'=>0]);
+                //操作sqlsrv
+               Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','JYMJ_Paoma')->delete();
+         
+                // 提交事务
+                Db::commit();    
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
                 return renderJson('10002','操作失败');
             }
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','');
+
     }
 
 
