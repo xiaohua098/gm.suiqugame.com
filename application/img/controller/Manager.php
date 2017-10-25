@@ -6,23 +6,20 @@ use \think\Request;
 use think\Session;
 use app\img\model\pub;
 class Manager extends Com{
-    // //后台管理员列表
-    // public function managerList(){
-    //     $count=10;
-    //     $res=Db::name('Manager')->paginate($count);
-    //     $page=$res->render();
-    //     $data=array('manager'=>$res,'page'=>$page);
-    //     if($res){
-    //         return renderJson('200','',$data);
-    //     }
-    //     return renderJson('100','获取失败');
-    // }
-    // 
      
     public function  manager(){
+        $model=new pub;
+        $param=Request::instance()->param();
         $flag=$this->flag;
-        if($flag){
-             return renderJson('10007','token为空或者token已经过期');
+        if($flag == '1'){
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']));
+            return renderJson('10007','token为空或者token已经过期');
+        }
+        if($flag == '2'){
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
+            return renderJson('101','违法操作');
         }
         // if (Request::instance()->isGet()){
         //     $data=Request::instance()->param();
@@ -43,32 +40,36 @@ class Manager extends Com{
         //     $data=Request::instance()->param();
         //    return  $this->noticeDel($data);
         // };
-        // $param=$data;
-        $model=new pub;
-        // //写入日志
-        // $data=Request::instance()->param();
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
-        return renderJson('101','违法操作');
+        
+       
     }
 
     //添加管理员
     public function managerAdd($data){
-            if(count($data) != 2){
-                return renderJson('10001','参数不合法！');
-            }
+        $param=$data;
+        $model=new pub;
+
             if(empty($data['name']) || empty($data['pwd']) ){
+                // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
                 return renderJson('10001','参数不能为空');
             }
             $res1=Db::name('manager')->where('name',$data['name'])->find();
             if($res1){
+                // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该用户名已存在']));
                 return renderJson('10005','该用户名已存在');
             }
             $data['pwd']=sha1('suiqu_'.$data['pwd']);
             $data['add_time']=$data['upd_time']=time();
             $res=Db::name('manager')->insert($data);
             if($res){
-                return renderJson('1','添加成功');
+                 // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+                return renderJson('1','');
             }
+             // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'添加失败']));
             return renderJson('10000','添加失败');
     }
 
@@ -146,18 +147,28 @@ class Manager extends Com{
 
     //修改密码
     public function  modifyPwd($data){
+        $param=$data;
+        $model=new pub;
             if($data['new_pwd'] != $data['re_pwd']){
+                 // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'两次输入密码不一致']));
                 return  renderJson('10001','两次输入密码不一致');
             }
             $mid=$this->mid;
             $res=Db::name('manager')->where('id',$mid)->find();
             if($res['pwd'] != sha1('suiqu_'.$data['old_pwd'])){
+                 // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10006','message'=>'原密码不正确']));
                return  renderJson('10006','原密码不正确');
             }
             $res1=Db::name('manager')->where('id',$mid)->update(['pwd'=>sha1('suiqu_'.$data['new_pwd'])]);
             if($res1){
-               return renderJson('1','密码修改成功');
+                 // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+               return renderJson('1','');
             }
+             // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'密码修改失败']));
             return renderJson('10000','密码修改失败');
     }
 

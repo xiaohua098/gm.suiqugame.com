@@ -151,15 +151,22 @@ class Test extends Controller{
     // $record=Db::table('test')->field('id')->select();
     // $ids = array_column($record, 'id');
 
-    $start=date('Y-m-d 00:00:00',time()-3600*24);
-    $end=date('Y-m-d 23:59:59',time()-3600*24);
+    // $start=date('Y-m-d 00:00:00',time()-3600*24);
+    // $end=date('Y-m-d 23:59:59',time()-3600*24);
+   
+    // $res=Db::connect('db3')->table('RecordPrivateCost')->where('CostDate','>',date('Y-m-d',strtotime('2017-10-22 23:59:59')))->select();
+    // var_dump($res);
+     
     
-    $res=Db::connect('db3')->table('RecordPrivateCost')->where('CostDate','between',[$start,$end])->select();
-    var_dump($res);
-    
-    
-    
+ Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YJMJ_Notice_20')->delete();
+
+
+
+
   }
+
+
+
 }
 
 

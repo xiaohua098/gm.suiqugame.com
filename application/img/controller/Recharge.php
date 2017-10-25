@@ -7,10 +7,18 @@ use think\Session;
 use app\img\model\pub;
 class Recharge extends Com{
 	public   function    Recharge(){
-		 $flag=$this->flag;
-        // var_dump($flag);exit;
-        if($flag){
-             return renderJson('10007','token为空或者token已经过期');
+		 $model=new pub;
+        $param=Request::instance()->param();
+        $flag=$this->flag;
+        if($flag == '1'){
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']));
+            return renderJson('10007','token为空或者token已经过期');
+        }
+        if($flag == '2'){
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
+            return renderJson('101','违法操作');
         }
         //充值统计
         if (Request::instance()->isGet()){
@@ -36,12 +44,7 @@ class Recharge extends Com{
            return  $this->exportUser($data);
         };
 
-        $param=$data;
-        $model=new pub;
-        // //写入日志
-        // $data=Request::instance()->param();
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
-        return renderJson('101','违法操作');
+        
 	}
 
 	public  function rechargeList($data){
@@ -49,18 +52,22 @@ class Recharge extends Com{
         $model=new pub;
 
         if(empty($data['pagesize'])){
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
             return renderJson('10001','参数不能为空');
         }
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
 
         //时间段查询
-        if(isset($data['start_time']) && isset($data['end_time'])){
-            $start=$data['start_time'];
-            $end=$data['end_time'];
+        if(isset($data['start_time']) && isset($data['end_time']) && $data['start_time'] && $data['end_time']){
+            $start=date('Y-m-d',$data['start_time']);
+            $end=date('Y-m-d',$data['end_time']);
             $total=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->count();
             if($offset == 0){
                 $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
+                // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
             }
             $temple=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset)->select();
@@ -68,20 +75,22 @@ class Recharge extends Com{
             $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
         
             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
         $total=Db::table('recharge_total')->count();
         if($offset == 0){
             $record=Db::table('recharge_total')->order('add_time','desc')->limit($pagesize)->select();
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
         $temple=Db::table('recharge_total')->order('add_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
         $record=Db::table('recharge_total')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
         // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
 	}
 
@@ -91,20 +100,20 @@ class Recharge extends Com{
         $model=new pub;
 
         //时间段查询
-        if(isset($data['start_time']) && isset($data['end_time'])){
-            $start=$data['start_time'];
-            $end=$data['end_time'];
+        if(isset($data['start_time']) && isset($data['end_time']) && $data['start_time'] && $data['end_time']){
+            $start=date('Y-m-d',$data['start_time']);
+            $end=date('Y-m-d',$data['end_time']);
             $total=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->count();
             $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->select();
             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
         $total=Db::table('recharge_total')->count();
         $record=Db::table('recharge_total')->order('add_time','desc')->select();
         // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
     }
 
@@ -115,6 +124,8 @@ class Recharge extends Com{
        $param=$data;
        $model=new pub;
         if(empty($data['pagesize']) || empty($data['uid'])){
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
             return renderJson('10001','参数不能为空');
         }
         $uid=$data['uid'];
@@ -133,9 +144,9 @@ class Recharge extends Com{
           }
 
         //时间段查询
-        if(isset($data['start_time']) && isset($data['end_time'])){
-            $start=$data['start_time'];
-            $end=$data['end_time'];
+        if(isset($data['start_time']) && isset($data['end_time']) && $data['start_time'] && $data['end_time']){
+            $start=date('Y-m-d H:i:s',$data['start_time']);
+            $end=date('Y-m-d H:i:s',$data['end_time']);
             $total=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->count();
             if($offset == 0){
                 $record=Db::table('order_info')->field('union_id','money','amount','code','state','create_time')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($pagesize)->select();
@@ -161,7 +172,7 @@ class Recharge extends Com{
                     }
                 }
             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
@@ -177,7 +188,10 @@ class Recharge extends Com{
                     }
                 }
             return renderJson('1','',['record'=>$record,'total'=>$total]);
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
         }
+        //非时间段查询
         $temple=Db::table('order_info')->where('union_id',$union_id)->order('create_time','desc')->limit($offset)->select();
         $tid=array_pop($temple);
         $record=Db::table('order_info')->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
@@ -190,7 +204,7 @@ class Recharge extends Com{
                     }
                 }
         // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
     }
 
@@ -216,9 +230,9 @@ class Recharge extends Com{
             $level=$agent['level'];
         }
         //时间段查询
-        if(isset($data['start_time']) && isset($data['end_time'])){
-            $start=$data['start_time'];
-            $end=$data['end_time'];
+        if(isset($data['start_time']) && isset($data['end_time']) && $data['start_time'] && $data['end_time']){
+            $start=date('Y-m-d H:i:s',$data['start_time']);
+            $end=date('Y-m-d H:i:s',$data['end_time']);
             $total=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->count();
             $record=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->select();
             //获取用户昵称和代理等级
@@ -230,7 +244,7 @@ class Recharge extends Com{
                     }
                 }
             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
@@ -246,7 +260,7 @@ class Recharge extends Com{
                     }
                 }
         // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'','data'=>['record'=>$record,'total'=>$total]]));
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
         return renderJson('1','',['record'=>$record,'total'=>$total]);
     }
 

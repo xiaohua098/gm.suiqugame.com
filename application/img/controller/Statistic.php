@@ -16,7 +16,7 @@ class Statistic extends Controller{
 	    $data['add_time']=date('Y-m-d',time()-3600*24);
 	    $res=Db::table('recharge_total')->insert($data);
 	    if($res){
-	      return renderJson('1','');
+	      return renderJson('1',''); 
 	    }
 	    return renderJson('10000','操作失败');
 	}
@@ -31,16 +31,20 @@ class Statistic extends Controller{
 	    $data['add_time']=date('Y-m-d',time()-3600*24);
 	    $res=Db::table('punch_total')->insert($data);
 	    if($res){
-	      return renderJson('1','');
+	      return renderJson('1');
 	    }
 	    return renderJson('10000','操作失败');
 	}
 
 	//房卡消耗数
 	public  function  expend(){
+		//昨天的开始时间和结束时间
+		$start=date('Y-m-d 00:00:00',time()-3600*24);
+    	$end=date('Y-m-d 23:59:59',time()-3600*24);
 		$data=array();
-		$data['water']=Db::connect('db3')->table('RecordPrivateCost')->whereTime('CostData','yesterday')->sum('CostValue');
-		$data['majiang']=;Db::connect('db3')->table('RecordPrivateCost')->whereTime('CostData','yesterday')->sum('CostValue');
+		//房卡消耗游戏种类
+		$data['water']=Db::connect('db3')->table('RecordPrivateCost')->where('CostDate','between',[$start,$end])->sum('CostValue');
+		$data['majiang']=;Db::connect('db3')->table('RecordPrivateCost')->where('CostDate','between',[$start,$end])->sum('CostValue');
 		$data['taotal']=$data['water']+$data['majiang'];
 		$data['create_time']=time();
 	    $data['add_time']=date('Y-m-d',time()-3600*24);
@@ -70,6 +74,9 @@ class Statistic extends Controller{
 
 	//代理每日数据
 	public  function  daily(){
+		//昨天的开始时间和结束时间
+		$start=date('Y-m-d 00:00:00',time()-3600*24);
+    	$end=date('Y-m-d 23:59:59',time()-3600*24);
 		$data=array();
 		$agent=Db::table('account')->field('mssql_account_id')->where('level','>',0)->select();
 		$uids=array_column($agent,'mssql_account_id');
@@ -80,7 +87,7 @@ class Statistic extends Controller{
 			$data[$k]['gm_num']=Db::table('punch_card')->where('uid',$uid)->whereTime('create_time','yesterday')->sum('num');
 			$punch_num=Db::table('transfer_log')->where('from_union_id',$agent['union_id'])->whereTime('create_time','yesterday')->sum('amount');
 			$data[$k]['punch_num']=$punch_num;
-			$game_num=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$v)->whereTime('CostData','yesterday')->sum('CostValue');
+			$game_num=Db::connect('db3')->table('RecordPrivateCost')->where('UserID',$v)->where('CostDate','between',[$start,$end])->sum('CostValue');
 			$data[$k]['expend_num']=$punch_num+$game_num;
 			$data[$k]['add_time']=date('Y-m-d',time()-3600*24);
 			$data[$k]['create_time']=time();
@@ -159,13 +166,13 @@ class Statistic extends Controller{
 		//历史房卡产出数
 		$c_card=$h_gmcard+$sys+$recharge_num;
 		//历史房卡消耗数
-		$s_card=Db::connect('db3')->table('RecordPrivateCost')->where('state','>',0)->sum('CostValue');
+		$s_card=Db::connect('db3')->table('RecordPrivateCost')->sum('CostValue');
 		//历史充值
 		$h_recharge=Db::table('order_info')->where('state','>',0)->sum('money');
 		//今日充值
-		$d_recharge=Db::table('order_info')->where('state','>',0)->whereTime('create_time','yesterday')->sum('money');
+		$d_recharge=Db::table('order_info')->where('state','>',0)->whereTime('create_time','today')->sum('money');
 		//今日GM划卡数
-		$d_gmcard=Db::table('punch_card')->whereTime('add_time','yesterday')->sum('num');
+		$d_gmcard=Db::table('punch_card')->whereTime('add_time','today')->sum('num');
 
 		$res=Db::table('census')->insert([
 			'h_gmcard'=>$h_gmcard,
@@ -175,7 +182,7 @@ class Statistic extends Controller{
 			'd_recharge'=>$d_recharge,
 			'd_gmcard'=>$d_gmcard,
 			'create_time'=>time(),
-			'add_time'=>date('Y-m-d',time()-3600*24),
+			'add_time'=>date('Y-m-d',time()),
 			]);
 		if($res){
 	      return renderJson('1','');

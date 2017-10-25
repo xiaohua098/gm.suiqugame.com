@@ -46,18 +46,20 @@ class Com extends Controller{
       
 
       
-        //判断是否越权访问
-        //判断是否是超级管理员
+        
+        
+        //管理员访问路径
+        //// $method=Request::instance()->method();
+        // $path=ltrim($_SERVER['PATH_INFO'],'/').strtolower($method); 
+        // $title=Db::table('auth')->field('title')->where('path',$path)->find(); 
+        // $this->path= $title['title']; 
+         //判断是否是超级管理员
         //if($arr['is_admin']==1)
         //{
             //return true;
         //} 
+        //判断是否越权访问
         //$paths=$res['paths'];
-        // $method=Request::instance()->method();
-        // $path=ltrim($_SERVER['PATH_INFO'],'/').strtolower($method); 
-        // $title=Db::table('auth')->field('title')->where('path',$path)->find(); 
-        // // var_dump($title);exit;
-        // $this->path= $title['title'];  
     //     // 如果当前访问的 模块-控制器-路径不在 允许的范围中，则跳转到登录界面
     //     if(!in_array($path,$paths)){
     //        $this->flag='2';

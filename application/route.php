@@ -26,29 +26,22 @@
 // ];
 
 use think\Route;
-// Route::rule('news','index/News/news_list');
-// Route::rule('new/:url','index/News/news_show');
 
 //后台登录
 Route::rule('login','img/Index/index');
 
-// Route::rule('modify/pwd','img/Manager/modifyPwd');
-// Route::rule('manager/add','img/Manager/managerAdd');
 
-
-
+//GM后台用户
 Route::rule('manager','img/Manager/manager');
-
 // 房卡发放
-// Route::rule('card/punch','img/Card/punchOne');
-// Route::rule('card/pay','img/Card/punchAll');
-
 Route::rule('card','img/Card/card');
+//权限
 Route::rule('auth','img/Auth/auth');
-
-
-
-
+//角色
+Route::rule('role','img/Role/role');
+//修改房卡价格
+Route::rule('price','img/Price/price');
+//公告和跑马灯
 Route::rule('notices','img/Message/notices');
 Route::rule('horse','img/Message/horse');
 
@@ -73,41 +66,14 @@ Route::rule('user','img/User/user');
 Route::rule('agentdaily','img/Agentdaily/agentdaily');
 //代理划卡详情
 Route::rule('agentpunch','img/Agentpunch/agentpunch');
-
+//操作日志
+Route::rule('operate','img/Operate/operate');
 
 
 
 
 //测试
 Route::rule('test','img/Test/test');
-
-
-// Route::rule('auth/list','img/Auth/authList');
-// Route::rule('auth/add','img/Auth/authAdd');
-// Route::rule('auth/edit','img/Auth/authEdit');
-// Route::rule('auth/del','img/Auth/authDel');
-// Route::rule('role/list','img/role/roleList'); 
-// Route::rule('role/add','img/role/roleAdd'); 
-// Route::rule('role/edit','img/role/roleEdit'); 
-// Route::rule('role/del','img/role/roledel'); 
-// //分配权限
-// Route::rule('auth/assign','img/role/roleAssign'); 
-// Route::rule('manager/list','img/Manager/managerList'); 
-// Route::rule('manager/edit','img/Manager/managerEdit'); 
-// Route::rule('manager/add','img/Manager/managerAdd'); 
-// Route::rule('manager/del','img/Manager/managerDel');
-// Route::rule('manager/pwd','img/Manager/modifyPwd');
-// Route::rule('manager/verify','img/Manager/verify');
-// //分配角色
-// Route::rule('role/assign','img/Manager/managerAssign'); 
-// Route::rule('msg/add','img/Message/msgAdd');
-// //房卡消耗
-// Route::rule('card/expend','img/Card/cardExpend');
-// Route::rule('card/punch','img/Card/cardPunch');
-// 
-// 
-
-
 
 
 //每日统计数据接口

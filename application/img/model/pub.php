@@ -3,7 +3,7 @@ namespace app\img\model;
 use think\Model;
 use think\Db;
 class pub extends Model{
-	public function saveRecord($mid,$mname,$path,$param,$response){
+	public function saveRecord($mid=0,$mname='无',$path,$param,$response){
 		  $operate_arr=array();
 	      $operate_arr['mid']=$mid;
 	      $operate_arr['mname']=$mname;

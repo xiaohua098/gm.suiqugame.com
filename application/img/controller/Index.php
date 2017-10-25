@@ -4,31 +4,28 @@ use think\Controller;
 use think\Db;
 use \think\Request;
 use think\Session;
-// // 指定允许其他域名访问  
-// header('Access-Control-Allow-Origin:*');  
-// // 响应类型  
-// header('Access-Control-Allow-Methods:*');  
-// // 响应头设置  
-// header('Access-Control-Allow-Headers:x-requested-with,content-type,token'); 
-
+use app\img\model\pub;
 class Index extends Controller{
     //后台登陆
     public function index(){
          if(Request::instance()->isPost()){
             $data=Request::instance()->post();
+            $model=new pub;
+            $param=$data;
             $res=Db::table('manager')->where('name',$data['name'])->find();
             if(empty($res)){
+                // //写入日志
+        // $model->saveRecord(0,$data['name'],'GM登录',json_encod($param),json_encode(['code'=>'10001','message'=>'该账号不存在']));
               return  renderJson('10001','该账号不存在！');
             }
             if($res['pwd'] == sha1('suiqu_'.$data['pwd'])){
                 //判断是否是超级管理员
                 //if($res['is_admin']==1)
                 //{
-                    //$paths='1';
-                    
+                    //$paths='';
                 //}else{
-                //   $paths=Db::table('role')->field('path')where('id',$res['role_id'])->find();
-                //   $paths=explod(',',$paths['paths']);
+                  // $paths=Db::table('role')->where('id',$res['role_id'])->column('paths');
+                //   $paths=explod(',',$paths);
                 //}                
                 //JWT加密
                 $key = "jfdksajfkl;dsajfkdjsaklfdajffdsafdsfdsfdsfdsklfdsafdsafdsafdsdsajlkfdsa";
@@ -54,22 +51,23 @@ class Index extends Controller{
                 // var_dump($login_arr);exit;
                 $res1=Db::table('login_record')->insert($login_arr);
                 if(!$res1){
+                    // //写入日志
+        // $model->saveRecord($res['id],$res['name'],'添加登录记录',json_encode($param),json_encode(['code'=>'10000','message'=>'操作失败']));
                     return renderJson('10000','操作失败');
                 }
-
-
-                //$login_arr=array();
-                //$login_arr['mid']=$res['id'];
-                //$login_arr['mname']=$res['name'];
-                //$login_arr['ip']=$_SERVER['REMOTE_ADDR'];
-                //$login_arr['add_time']=time();
-                //Db::table('login_record')->insert($login_arr);
-                  
-              return renderJson('1','登录成功!',$token);
+               // //写入日志
+        // $model->saveRecord($res['id'],$res['name'],'GM登录',json_encode($param),json_encode(['code'=>'1','message'=>'']));   
+              return renderJson('1','',$token);
             }else{
+                 // //写入日志
+        // $model->saveRecord($res['id'],$res['name'],'GM登录',json_encode($param),json_encode(['code'=>'10000','message'=>'登录密码错误']));   
+
               return renderJson('10000','登录密码错误!');
             }
         }
+        $param=Request::instance()->param();
+        // //写入日志
+        // $model->saveRecord(0,'','GM登录',json_encode($param),json_encode(['code'=>'101','message'=>'越权访问失败']));
         return renderJson('101','越权访问失败！');
     } 
 }
