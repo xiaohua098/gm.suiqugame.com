@@ -180,8 +180,12 @@ class Test extends Controller{
    //          // 
    //          $res=Db::table('message')->where('type',2)->update(['is_del'=>0]);
    //          var_dump($res);
-   $data=__STATE__;
-   var_dump($data);
+  $record=Db::table('manager')
+          ->field('a.*,b.title as role')
+          ->alias('a')
+          ->join('role b','a.role_id=b.id','LEFT')
+          ->order('a.add_time','desc')->select();
+  var_dump($record);
 }
 
 

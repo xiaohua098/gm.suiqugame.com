@@ -54,11 +54,10 @@ class Auth extends Com{
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$auth]);
         }
-        
-        if(isset($data['offset']) && isset($data['pagesize']) && $data['pagesize']){
+        $total=Db::table('auth')->count();
+        if(isset($data['offset']) && isset($data['pagesize']) && $data['pagesize']  && $data['offset'] <= $total){
             $offset=$data['offset'];
             $pagesize=$data['pagesize'];
-            $total=Db::table('auth')->count();
             if($offset == 0){
                 $auth=Db::table('auth')->order('add_time','desc')->limit($pagesize)->select();
 
@@ -113,8 +112,8 @@ class Auth extends Com{
         $model=new pub;
         if(empty($data['title']) || empty($data['id'])){
            //  //写入日志
-           // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
-            return renderJson('10001','参数不能为空');
+           // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
+            return renderJson('10001','参数不合法');
         }
         $res=Db::name('auth')->where('id',$data['id'])->update([
             'upd_time'=>time(),
@@ -136,7 +135,7 @@ class Auth extends Com{
     public function authDel($data){
         $param=$data;
         $model=new pub;
-            if(isset($data['id'] && is_numeric($data['id']))){
+            if(isset($data['id']) && is_numeric($data['id'])){
                 $res=Db::name('auth')->where('id',$data['id'])->delete($data);
                 if($res){
                       //写入日志

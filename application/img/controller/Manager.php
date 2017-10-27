@@ -50,30 +50,33 @@ class Manager extends Com{
     public function managerAdd($data){
         $param=$data;
         $model=new pub;
+            if(isset($data['name']) && isset($data['pwd']) && isset($data['is_admin']) && $data['name'] && $data['pwd']){
 
-            if(empty($data['name']) || empty($data['pwd']) ){
-                // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
-                return renderJson('10001','参数不能为空');
-            }
-            $res1=Db::name('manager')->where('name',$data['name'])->find();
-            if($res1){
-                // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该用户名已存在']));
-                return renderJson('10005','该用户名已存在');
-            }
-            $data1['name']=$data['name'];
-            $data1['pwd']=sha1('suiqu_'.$data['pwd']);
-            $data1['add_time']=$data1['upd_time']=time();
-            $res=Db::name('manager')->insert($data1);
-            if($res){
+                $res1=Db::name('manager')->where('name',$data['name'])->find();
+                if($res1){
+                    // //写入日志
+                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该用户名已存在']));
+                    return renderJson('10005','该用户名已存在');
+                }
+                $data1['is_admin']=$data['is_admin'];
+                $data1['name']=$data['name'];
+                $data1['pwd']=sha1('suiqu_'.$data['pwd']);
+                $data1['add_time']=$data1['upd_time']=time();
+                $res=Db::name('manager')->insert($data1);
+                if($res){
+                    // //写入日志
+                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
+                    return renderJson('1','');
+                }
                  // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
-                return renderJson('1','');
+                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'添加失败']));
+                return renderJson('10000','添加失败');
+
             }
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'添加失败']));
-            return renderJson('10000','添加失败');
+
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
+                return renderJson('10001','参数不合法');
     }
 
     // //修改管理员
@@ -126,6 +129,11 @@ class Manager extends Com{
     public function  modifyPwd($data){
         $param=$data;
         $model=new pub;
+        if(empty($data['new_pwd']) || empty($data['re_pwd']) || empty($data['old_pwd'])){
+            // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
+            return renderJson('10001','参数不合法');
+        }
             if($data['new_pwd'] != $data['re_pwd']){
                  // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'两次输入密码不一致']));
@@ -174,30 +182,43 @@ class Manager extends Com{
     public  function  managerList($data){
         $param=$data;
         $model=new pub;
-        if(isset($data['pagesize']) &&  isset($data['offset']) && $data['pagesize']){
+        $total=Db::table('manager')->count();
+        if(isset($data['pagesize']) &&  isset($data['offset']) && $data['pagesize'] && $data['offset']<=$total){
             $offset=$data['offset'];
             $pagesize=$data['pagesize'];
             if($offset == 0){
-                $record=Db::table('manager')->order('add_time','desc')->limit($pagesize)->select();
+                $record=Db::table('manager')
+                        ->field('a.*,b.title as role')
+                        ->alias('a')
+                        ->join('role b','a.role_id=b.id','LEFT')
+                        ->order('a.add_time','desc')->limit($pagesize)->select();
                     return renderJson('1','',['record'=>$record,'total'=>$total]);
             }
             $temple=Db::table('manager')->order('add_time','desc')->limit($offset)->select();
             $tid=array_pop($temple);
-            $record=Db::table('manager')->order('add_time','desc')->limit($pagesize)->select();
+            $record=Db::table('manager')
+                    ->field('a.*,b.title as role')
+                    ->alias('a')
+                    ->join('role b','a.role_id=b.id','LEFT')
+                    ->where('a.id','<=',$tid['id'])
+                    ->order('a.add_time','desc')->limit($pagesize)->select();
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
-        if($isset($data['id']) && $data['id']){
-            $record=Db::table('manager')->where('id',$data['id'])->find();
+        if(isset($data['id']) && $data['id']){
+            $record=Db::table('manager')
+                    ->field('a.*,b.title as role')
+                    ->alias('a')
+                    ->join('role b','a.role_id=b.id','LEFT')
+                    ->where('a.id',$data['id'])->find();
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
             return renderJson('1','',['record'=>$record]);
         }
-        
         // //写入日志
-       // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
-        return renderJson('10001','参数不能为空');
+       // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
+        return renderJson('10001','参数不合法');
 
     }
      

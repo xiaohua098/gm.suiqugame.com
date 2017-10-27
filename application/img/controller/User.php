@@ -206,7 +206,6 @@ class User extends Com{
                 // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']));
                 return renderJson('1');
         }
-
         // //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']));
         return renderJson('10001','参数不合法');

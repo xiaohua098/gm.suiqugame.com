@@ -74,7 +74,7 @@ class Message extends Com{
 
         if(isset($data['content']) && isset($data['title']) && $data['content']  && $data['title']){
 
-             $data2['add_time']=time();
+        $data2['add_time']=time();
         $data2['mid']=$this->mid;
         $data2['mname']=$this->mname;
         $data2['type']=1;

@@ -35,27 +35,19 @@ class Com extends Controller{
             //判断用户登陆是否过期
             if($arr['expire_time']<time()){
                 $this->flag='1';
-
                 return false;
             }
-            $this->mid=$arr['mid'];
-            $this->mname=$arr['mname'];
-            $this->flag='';
-
-        }
-      
-
-      
-        
-        
-        //管理员访问路径
+            //管理员访问路径
         //// $method=Request::instance()->method();
         // $path=ltrim($_SERVER['PATH_INFO'],'/').strtolower($method); 
-        // $title=Db::table('auth')->field('title')->where('path',$path)->find(); 
-        // $this->path= $title['title']; 
+        // $title=Db::table('auth')->where('path',$path)->value('title'); 
+        // $this->path= $title; 
          //判断是否是超级管理员
         //if($arr['is_admin']==1)
         //{
+            // $this->mid=$arr['mid'];
+            // $this->mname=$arr['mname'];
+            // $this->flag='';
             //return true;
         //} 
         //判断是否越权访问
@@ -63,7 +55,16 @@ class Com extends Controller{
     //     // 如果当前访问的 模块-控制器-路径不在 允许的范围中，则跳转到登录界面
     //     if(!in_array($path,$paths)){
     //        $this->flag='2';
+    //        return false;
     //     }
+            $this->mid=$arr['mid'];
+            $this->mname=$arr['mname'];
+            $this->flag='';
+
+        }
+      
+
+        
         
     }
 

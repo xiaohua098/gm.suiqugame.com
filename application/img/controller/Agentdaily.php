@@ -38,7 +38,6 @@ class Agentdaily extends Com{
    public  function dailyList($data){
         $param=$data;
         $model=new pub;
-
         if(empty($data['pagesize']) ||  empty($data['uid'])){
             // //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));

@@ -6,7 +6,7 @@ use \think\Request;
 use think\Session;
 use app\img\model\pub;
 class Agent extends Com{
-    public function  user(){
+    public function  agent(){
         $model=new pub;
         $param=Request::instance()->param();
         $flag=$this->flag;
@@ -68,6 +68,7 @@ class Agent extends Com{
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
+        $total=Db::table('user')->where('level','>',0)->count();
         if(empty($data['pagesize'])){
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']));
@@ -75,8 +76,7 @@ class Agent extends Com{
         }
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
-
-        $total=Db::table('user')->where('level','>',0)->count();
+        
         if($offset == 0){
             $record=Db::table('user')->where('level','>',0)->order('add_time','desc')->limit($pagesize)->select();
             // //写入日志
@@ -147,7 +147,7 @@ class Agent extends Com{
                                 'update_time'=>time(),   //修改姓名和电话时间
             if(empty($res3)){
                 // //写入日志
-                //     $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'操作失败']));
+                //     $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));
                     return renderJson('10002','操作失败');
             }                  
             // //写入日志

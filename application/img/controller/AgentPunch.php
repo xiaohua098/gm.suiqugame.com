@@ -32,8 +32,6 @@ class Agentdaily extends Com{
            return  $this->exportList($data);
         }
        
-
-        
     }
 
 

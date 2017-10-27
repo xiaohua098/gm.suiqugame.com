@@ -61,7 +61,7 @@ Route::rule('recharge','img/Recharge/recharge');
 //玩家
 Route::rule('user','img/User/user');
 //代理
-Route::rule('user','img/User/user');
+Route::rule('agent','img/Agent/agent');
 //代理每日数据
 Route::rule('agentdaily','img/Agentdaily/agentdaily');
 //代理划卡详情
