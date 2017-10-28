@@ -38,25 +38,33 @@ class Com extends Controller{
                 return false;
             }
             //管理员访问路径
-        //// $method=Request::instance()->method();
-        // $path=ltrim($_SERVER['PATH_INFO'],'/').strtolower($method); 
-        // $title=Db::table('auth')->where('path',$path)->value('title'); 
-        // $this->path= $title; 
+        $method=Request::instance()->method();
+        $path=ltrim($_SERVER['PATH_INFO'],'/').strtolower($method); 
+        $title=Db::table('auth')->where('path',$path)->value('title'); 
+        $this->path= $title; 
          //判断是否是超级管理员
-        //if($arr['is_admin']==1)
-        //{
-            // $this->mid=$arr['mid'];
-            // $this->mname=$arr['mname'];
-            // $this->flag='';
-            //return true;
-        //} 
+        $is_admin=Db::table('manager')->where('id',$arr['mid'])->value('is_admin');
+        if($is_admin==1)
+        {
+            $this->mid=$arr['mid'];
+            $this->mname=$arr['mname'];
+            $this->flag='';
+            return true;
+        } 
+
+
         //判断是否越权访问
-        //$paths=$res['paths'];
-    //     // 如果当前访问的 模块-控制器-路径不在 允许的范围中，则跳转到登录界面
-    //     if(!in_array($path,$paths)){
-    //        $this->flag='2';
-    //        return false;
-    //     }
+        $role_id=$arr['role_id'];
+        $res=Db::table('role')->where('id',$role_id)->value('paths');
+        $paths=explode(',',$res);
+        $pathList=Db::table('auth')->field('path')->where('id','in',$paths)->select();
+        $pathsList=array_column($pathList,'path');
+
+        // 如果当前访问的 模块-控制器-路径不在 允许的范围中，则跳转到登录界面
+        if(!in_array($path,$pathsList)){
+           $this->flag='2';
+           return false;
+        }
             $this->mid=$arr['mid'];
             $this->mname=$arr['mname'];
             $this->flag='';

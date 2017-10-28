@@ -63,11 +63,18 @@ Route::rule('user','img/User/user');
 //代理
 Route::rule('agent','img/Agent/agent');
 //代理每日数据
-Route::rule('agentdaily','img/Agentdaily/agentdaily');
+Route::rule('agentdaily','img/AgentDaily/agentdaily');
 //代理划卡详情
-Route::rule('agentpunch','img/Agentpunch/agentpunch');
+Route::rule('agentpunch','img/AgentPunch/agentpunch');
 //操作日志
 Route::rule('operate','img/Operate/operate');
+
+//分配权限
+Route::rule('allot','img/Allot/allot');
+//房卡消耗记录
+Route::rule('cardexpend','img/CardExpend/cardexpend');
+//充值记录
+Route::rule('userrecharge','img/UserRecharge/recharge');
 
 
 

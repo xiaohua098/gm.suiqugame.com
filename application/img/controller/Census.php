@@ -7,6 +7,7 @@ use think\Session;
 use app\img\model\pub;
 class Census extends Com{
 	public   function    Census(){
+        $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		$model=new pub;
         $param=Request::instance()->param();
         $flag=$this->flag;
@@ -29,11 +30,12 @@ class Census extends Com{
 	}
 
 	public  function censusList($data){
+        $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		$param=$data;
         $model=new pub;
-		$record=Db::table('total_record')->order('create_time desc')->find();
+		$record=Db::table('census')->order('create_time desc')->find();
 		// //写入日志
-  //       $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'']));
+  //       $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'']),$url);
 		return renderJson('1','',['record'=>$record]);
 	}
 

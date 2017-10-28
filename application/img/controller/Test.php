@@ -26,7 +26,6 @@ class Test extends Controller{
 		// }
 
 
-
 		 // var_dump($_SERVER['HTTP_TOKEN']);
         // var_dump($this->mid);
         // var_dump($this->flag);
@@ -180,12 +179,77 @@ class Test extends Controller{
    //          // 
    //          $res=Db::table('message')->where('type',2)->update(['is_del'=>0]);
    //          var_dump($res);
-  $record=Db::table('manager')
-          ->field('a.*,b.title as role')
-          ->alias('a')
-          ->join('role b','a.role_id=b.id','LEFT')
-          ->order('a.add_time','desc')->select();
-  var_dump($record);
+   // $v['UserID']=5860;
+   // $v['NickName']='haha';
+   // $v['unionid']='ol96N1M065wsnDWyDnA_kna8c8EY';
+   // $v['RegisterDate']='2017-10-22 00:09:07.570';
+   //  $data['uid']=$v['UserID'];
+   //  $data['nickname']=$v['NickName'];
+   //    $data['register_time']=$v['RegisterDate'];
+   //    $s_card=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v['UserID'])->value('InsureScore');
+   //    $data['s_card']=$s_card ? $s_card : 0;
+   //    $recharge=Db::table('order_info')->where('state',__STATE__)->where('union_id',$v['unionid'])->sum('money');
+   //    $data['recharge']=$recharge ? $recharge : 0;
+   //    $punch_num=Db::table('transfer_log')->where('from_union_id',$v['unionid'])->sum('amount');
+   //    $punch_num=$punch_num ? $punch_num : 0;
+   //    $game_num=Db::connect('db3')->table('RecordPrivateCost')->where('CostFrom',1)->whereOr('CostFrom',2)->where('UserID',$v['UserID'])->sum('CostValue');
+   //    $game_num =$game_num ? $game_num : 0;
+   //    $data['x_card']=$game_num+$punch_num;
+   //    $data['daily']=($game_num+$punch_num)/round(strtotime(date('Y-m-d',time()))-strtotime(date('Y-m-d',strtotime($v['RegisterDate']))))*24*3600;//代理和玩家不一样(登录天数)注册天数
+   //    var_dump($data);
+   //    
+   
+  
+
+  // sqlsrv和mysql链表查询
+  // $record=Db::connect('db3')->table('RecordPrivateCost')
+  //               ->alias('a')
+  //               ->connect('db5')
+  //               ->join('account b','a.UserID=b.mssql_account_id','LEFT')
+  //               // ->connect('db4')
+  //               // ->join('GameKindItem c','a.KindID=c.KindID','LEFT')
+  //               // ->field('a.*,b.phone,c.KindName')
+  //               ->where('a.CostFrom',1)
+  //               ->whereOr('a.CostFrom',2)
+  //               ->order('a.CostDate','desc')
+  //               ->limit(1)
+  //               ->select();
+  // $record=Db::query("select a.*,b.phone,c.KindName from db3.dbo.RecordPrivateCost as a left join db5.dbo.account as b on a.UserID=b.mssql_account_id left join db4.dbo.GameKindItem as c on a.KindID=c.KindID");
+  
+// $subsql = Db::connect('db5')->table('account')->buildSql();
+// $record=Db::connect('db3')->table('RecordPrivateCost')
+//         ->alias('a')
+//         ->join([$subsql=>'b'], 'a.UserID=b.mssql_account_id')
+//         ->field('a.*,b.phone')
+//         ->fetchSql(true)
+//         ->select();
+//     // $record=Db::query("select * from db3.dbo.RecordPrivateCost order by CostDate desc limit 3 ");
+//   var_dump($record);
+//   
+//   
+//   
+
+
+
+
+
+// $user=Db::connect('db2')->table('AccountsInfo')->field('UserID,unionid,NickName,RegisterDate,LastLogonDate')->select();
+  Db::connect('db2')->table('AccountsInfo')->field('UserID ,unionid ,NickName ,RegisterDate as ,LastLogonDate ')->where('UserID','<',100)->chunk(20, function($users) {
+      foreach ($users as $v) {
+          $s_card=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v['UserID'])->value('InsureScore');
+          $users[]['s_card']=$s_card ? $s_card : 0;
+          $recharge=Db::table('order_info')->where('state',__STATE__)->where('union_id',$v['unionid'])->sum('money');
+          $users[]['recharge']=$recharge ? $recharge : 0;
+          $punch_num=Db::table('transfer_log')->where('from_union_id',$v['unionid'])->sum('amount');
+          $punch_num=$punch_num ? $punch_num : 0;
+          $game_num=Db::connect('db3')->table('RecordPrivateCost')->where('CostFrom',1)->whereOr('CostFrom',2)->where('UserID',$v['UserID'])->sum('CostValue');
+          $game_num =$game_num ? $game_num : 0;
+          $users[]['x_card']=$game_num+$punch_num;
+      }
+       Db::table('user')->insertAll($users);
+  });
+      
+
 }
 
 
