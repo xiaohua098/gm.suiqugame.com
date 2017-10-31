@@ -52,8 +52,6 @@ class CardExpend extends Com{
         }
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
-
-        
         if(isset($data['uid']) && $data['uid']){
             $uid=$data['uid'];
             $phone=Db::table('account')->where('mssql_account_id',$data['uid'])->value('phone');
@@ -71,25 +69,7 @@ class CardExpend extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-            if($offset == 0){
-                $record=Db::connect('db3')->table('RecordPrivateCost')
-                ->where('CostFrom',1)
-                ->whereOr('CostFrom',2)
-                ->where('UserID',$uid)
-                ->where('CostDate','between ',[$start,$end])
-                ->order('CostDate','desc')
-                ->limit($pagesize)->select();
-                //游戏名称和电话号码
-                foreach ($record as $k => $v) {
-                    $record[$k]['phone']=$phone;
-                    $record[$k]['KindName']=Db::connect('db4')->table('GameKindItem')->where('KindID',$v['KindID'])->value('KindName');
-                }
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-                return renderJson('1','',['record'=>$record,'total'=>$total]);
-            }
-            $temple=Db::connect('db3')->table('RecordPrivateCost')->where('CostFrom',1)->whereOr('CostFrom',2)->where('UserID',$uid)->where('CostDate','between ',[$start,$end])->order('CostDate','desc')->limit($offset)->select();
-            $tid=array_pop($temple);
+            
             $record=Db::connect('db3')->table('RecordPrivateCost')
                   ->where('CostFrom',1)
                   ->whereOr('CostFrom',2)
@@ -97,7 +77,7 @@ class CardExpend extends Com{
                   ->where('CostDate','between ',[$start,$end])
                   ->where('RecordID','<=',$tid['RecordID'])
                   ->order('CostDate','desc')
-                  ->limit($pagesize)->select();
+                  ->limit($offset,$pagesize)->select();
             //游戏名称和电话号码
                 foreach ($record as $k => $v) {
                     $record[$k]['phone']=$phone;
@@ -114,31 +94,14 @@ class CardExpend extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-        if($offset == 0){
-            $record=Db::connect('db3')->table('RecordPrivateCost')
-                    ->where('CostFrom',1)
-                    ->whereOr('CostFrom',2)
-                    ->where('UserID',$uid)
-                    ->order('CostDate','desc')
-                    ->limit($pagesize)->select();
-                    //游戏名称和电话号码
-                foreach ($record as $k => $v) {
-                    $record[$k]['phone']=$phone;
-                    $record[$k]['KindName']=Db::connect('db4')->table('GameKindItem')->where('KindID',$v['KindID'])->value('KindName');
-                }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-            return renderJson('1','',['record'=>$record,'total'=>$total]);
-        }
-        $temple=Db::connect('db3')->table('RecordPrivateCost')->where('CostFrom',1)->whereOr('CostFrom',2)->where('UserID',$uid)->order('CostDate','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
+        
         $record=Db::connect('db3')->table('RecordPrivateCost')
               ->where('CostFrom',1)
               ->whereOr('CostFrom',2)
               ->where('UserID',$uid)
               ->where('RecordID','<=',$tid['RecordID'])
               ->order('CostDate','desc')
-              ->limit($pagesize)->select();
+              ->limit($offset,$pagesize)->select();
               //游戏名称和电话号码
                 foreach ($record as $k => $v) {
                     $record[$k]['phone']=$phone;

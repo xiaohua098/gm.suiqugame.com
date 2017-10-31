@@ -36,6 +36,7 @@ class Allot extends Com{
         if(isset($data['id']) && isset($data['role_id']) && is_numeric($data['id']) && is_numeric($data['role_id'])){
             $res=Db::table('manager')->where('id',$data['id'])->update([
                 'role_id'=>$data['role_id'],
+                'is_admin'=>0,
                 'upd_time'=>time()
                 ]);
             if($res){

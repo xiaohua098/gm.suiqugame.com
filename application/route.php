@@ -44,6 +44,7 @@ Route::rule('price','img/Price/price');
 //公告和跑马灯
 Route::rule('notices','img/Message/notices');
 Route::rule('horse','img/Message/horse');
+Route::rule('dope','img/Message/dope');
 
 
 //实时统计
@@ -97,7 +98,17 @@ Route::rule('total/stock','img/Statistic/stock');
 Route::rule('total/daily','img/Statistic/daily');
 //玩家和代理统计
 Route::rule('total/user','img/Statistic/user');
+Route::rule('total/usertotal','img/Statistic/usertotal');
 //总的统计
 Route::rule('total/census','img/Statistic/census');
 
 
+
+
+
+
+// //昨日数据
+// Route::rule('statistic','img/Statistic/statistic');
+// Route::rule('usercen','img/Statistic/userCen');
+// //实时统计
+// Route::rule('census','img/Statistic/census');

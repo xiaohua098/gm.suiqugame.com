@@ -5,8 +5,8 @@ use think\Db;
 use think\Request;
 use app\img\model\pub;  
 class Card extends Com{
-    $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     public function  card(){
+        $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $model=new pub;
         $param=Request::instance()->param();
         $flag=$this->flag;

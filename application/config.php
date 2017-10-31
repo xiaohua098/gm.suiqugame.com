@@ -354,13 +354,13 @@ return [
         'type'     => 'mysql',
         // 'type'     => 'dblib',
         // 服务器
-        'hostname' => '116.62.122.223',
+        'hostname' => '127.0.0.1',
         // 数据库名
         'database' => 'suiqu_game',
         // 数据库用户名
         'username' => 'root',
         // 数据库密码
-        'password' => '111111',
+        'password' => 'root',
         // 数据库连接端口
         'hostport' => '3306',
         // 数据库连接参数

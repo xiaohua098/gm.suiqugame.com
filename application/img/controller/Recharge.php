@@ -71,15 +71,8 @@ class Recharge extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-            if($offset == 0){
-                $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($pagesize)->select();
-                // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-                return renderJson('1','',['record'=>$record,'total'=>$total]);
-            }
-            $temple=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset)->select();
-            $tid=array_pop($temple);
-            $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+            
+            $record=Db::table('recharge_total')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset,$pagesize)->select();
         
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
@@ -92,15 +85,8 @@ class Recharge extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-        if($offset == 0){
-            $record=Db::table('recharge_total')->order('add_time','desc')->limit($pagesize)->select();
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-            return renderJson('1','',['record'=>$record,'total'=>$total]);
-        }
-        $temple=Db::table('recharge_total')->order('add_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $record=Db::table('recharge_total')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        
+        $record=Db::table('recharge_total')->order('add_time','desc')->limit($offset,$pagesize)->select();
         // //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['record'=>$record,'total'=>$total]);

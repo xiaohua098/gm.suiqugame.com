@@ -63,15 +63,8 @@ class Role extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-            if($offset == 0){
-                $role=Db::table('role')->order('add_time','desc')->limit($pagesize)->select();
-            //     //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-                return renderJson('1','',['role'=>$role,'total'=>$total]);
-            }
-            $temple=Db::table('role')->order('add_time','desc')->limit($offset)->select();
-            $tid=array_pop($temple);
-            $role=Db::table('role')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+            
+            $role=Db::table('role')->order('add_time','desc')->limit($offset,$pagesize)->select();
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',['role'=>$role,'total'=>$total]);

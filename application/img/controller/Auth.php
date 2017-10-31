@@ -60,16 +60,8 @@ class Auth extends Com{
         if(isset($data['offset']) && isset($data['pagesize']) && $data['pagesize']  && $data['offset'] <= $total){
             $offset=$data['offset'];
             $pagesize=$data['pagesize'];
-            if($offset == 0){
-                $auth=Db::table('auth')->order('add_time','desc')->limit($pagesize)->select();
-
-            //     //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-                return renderJson('1','',['auth'=>$auth,'total'=>$total]);
-            }
-            $temple=Db::table('auth')->order('add_time','desc')->limit($offset)->select();
-            $tid=array_pop($temple);
-            $auth=Db::table('auth')->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+            
+            $auth=Db::table('auth')->order('add_time','desc')->limit($offset,$pagesize)->select();
 
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
@@ -107,6 +99,7 @@ class Auth extends Com{
                 'is_show'=>$data['is_show'],
                 'add_time'=>time(),
                 'upd_time'=>time(),
+                'url'=>$data['url'],
             ]);
             if($res){
         //         //写入日志
@@ -140,7 +133,8 @@ class Auth extends Com{
             'path'    =>$data['path'],
             'is_show' =>$data['is_show'],
             'title'   =>$data['title'],
-            'pid'     =>$data['pid']
+            'pid'     =>$data['pid'],
+            'url'     =>$data['url']
             ]);
         if($res){
            //  //写入日志

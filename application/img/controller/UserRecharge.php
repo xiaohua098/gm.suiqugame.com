@@ -40,7 +40,7 @@ class UserRecharge extends Com{
         $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
        $param=$data;
        $model=new pub;
-        if(empty($data['pagesize']))){
+        if(empty($data['pagesize'])){
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
             return renderJson('10001','参数不能为空');
@@ -70,21 +70,8 @@ class UserRecharge extends Com{
                 // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
-                    if($offset == 0){
-                        $record=Db::table('order_info')->field('union_id,money,amount,code,state,create_time')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($pagesize)->select();
-                        //获取用户昵称和代理等级
-                        foreach($record as $k => $v) {
-                            $record[$k]['uid']=$uid;
-                            $record[$k]['nickname']=$nickname;
-                            if($level){
-                                $record[$k]['level']=$level;
-                            }
-                        }
-                        return renderJson('1','',['record'=>$record,'total'=>$total]);
-                    }
-                    $temple=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($offset)->select();
-                    $tid=array_pop($temple);
-                    $record=Db::table('order_info')->where('create_time','between',[$start,$end])->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
+                    
+                    $record=Db::table('order_info')->where('create_time','between',[$start,$end])->where('union_id',$union_id)->order('create_time','desc')->limit($offset,$pagesize)->select();
                     //获取用户昵称和代理等级
                      foreach($record as $k => $v) {
                             $record[$k]['uid']=$uid;
@@ -104,24 +91,8 @@ class UserRecharge extends Com{
                 // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
-                if($offset == 0){
-                    $record=Db::table('order_info')->where('union_id',$union_id)->order('create_time','desc')->limit($pagesize)->select();
-                    //获取用户昵称和代理等级
-                     foreach($record as $k => $v) {
-                            $record[$k]['uid']=$uid;
-                            $record[$k]['nickname']=$nickname;
-                            if($level){
-                                $record[$k]['level']=$level;
-                            }
-                        }
-                    return renderJson('1','',['record'=>$record,'total'=>$total]);
-                    // //写入日志
-                    // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-                }
-                //非时间段查询
-                $temple=Db::table('order_info')->where('union_id',$union_id)->order('create_time','desc')->limit($offset)->select();
-                $tid=array_pop($temple);
-                $record=Db::table('order_info')->where('union_id',$union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
+                
+                $record=Db::table('order_info')->where('union_id',$union_id)->order('create_time','desc')->limit($offset,$pagesize)->select();
                 //获取用户昵称和代理等级
                      foreach($record as $k => $v) {
                             $record[$k]['uid']=$uid;
@@ -146,27 +117,14 @@ class UserRecharge extends Com{
                 // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
-                    if($offset == 0){
-                        $record=Db::table('order_info')
-                                ->alias('a')
-                                ->join('account b','a.union_id=b.union_id','LEFT')
-                                ->field('a.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
-                                ->where('a.create_time','between ',[$start,$end])
-                                ->order('a.create_time','desc')
-                                ->limit($pagesize)
-                                ->select();
-                        return renderJson('1','',['record'=>$record,'total'=>$total]);
-                    }
-                    $temple=Db::table('order_info')->where('create_time','between ',[$start,$end])->order('create_time','desc')->limit($offset)->select();
-                    $tid=array_pop($temple);
+                    
                     $record=Db::table('order_info')
                             ->alias('a')
                                 ->join('account b','a.union_id=b.union_id','LEFT')
-                                ->field('a.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
+                                ->field('b.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
                             ->where('a.create_time','between',[$start,$end])
-                            ->where('a.id','<=',$tid['id'])
                             ->order('a.create_time','desc')
-                            ->limit($pagesize)->select();
+                            ->limit($offset,$pagesize)->select();
                     // //写入日志
                     // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                     return renderJson('1','',['record'=>$record,'total'=>$total]);
@@ -178,26 +136,13 @@ class UserRecharge extends Com{
                 // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
-                if($offset == 0){
-                    $record=Db::table('order_info')
-                        ->alias('a')
-                                ->join('account b','a.union_id=b.union_id','LEFT')
-                                ->field('a.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
-                        ->order('a.create_time','desc')->limit($pagesize)->select();
-                    return renderJson('1','',['record'=>$record,'total'=>$total]);
-                    // //写入日志
-                    // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-                }
-                //非时间段查询
-                $temple=Db::table('order_info')->order('create_time','desc')->limit($offset)->select();
-                $tid=array_pop($temple);
+                
                 $record=Db::table('order_info')
                         ->alias('a')
                         ->join('account b','a.union_id=b.union_id','LEFT')
-                        ->field('a.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
-                       ->where('a.id','<=',$tid['id'])
+                        ->field('b.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
                        ->order('a.create_time','desc')
-                       ->limit($pagesize)->select();
+                       ->limit($offset,$pagesize)->select();
                 // //写入日志
                 // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
@@ -269,7 +214,7 @@ class UserRecharge extends Com{
                     $record=Db::table('order_info')
                             ->alias('a')
                                 ->join('account b','a.union_id=b.union_id','LEFT')
-                                ->field('a.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
+                                ->field('b.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
                             ->where('a.create_time','between',[$start,$end])
                             ->order('a.create_time','desc')
                             ->select();
@@ -283,7 +228,7 @@ class UserRecharge extends Com{
                 $record=Db::table('order_info')
                         ->alias('a')
                         ->join('account b','a.union_id=b.union_id','LEFT')
-                        ->field('a.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
+                        ->field('b.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
                        ->order('a.create_time','desc')
                        ->select();
                 // //写入日志

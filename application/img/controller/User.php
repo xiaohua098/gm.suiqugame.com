@@ -82,15 +82,8 @@ class User extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-        if($offset == 0){
-            $record=Db::table('user')->order('add_time','desc')->where('level',0)->limit($pagesize)->select();
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-            return renderJson('1','',['record'=>$record,'total'=>$total]);
-        }
-        $temple=Db::table('user')->where('level',0)->order('add_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $record=Db::table('user')->where('id','<=',$tid['id'])->where('level',0)->order('add_time','desc')->limit($pagesize)->select();
+        
+        $record=Db::table('user')->where('level',0)->order('add_time','desc')->limit($offset,$pagesize)->select();
         // //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['record'=>$record,'total'=>$total]);
@@ -135,7 +128,7 @@ class User extends Com{
         $param=$data;
         //玩家升级为代理
         if(isset($data['uid']) && isset($data['phone']) && isset($data['realname']) && isset($data['level'])){
-            $res=Db::table('Account')->where('phone',$data['phone'])->find();
+            $res=Db::table('account')->where('phone',$data['phone'])->find();
             if($res){
             //     //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该电话号码已注册']),$url);

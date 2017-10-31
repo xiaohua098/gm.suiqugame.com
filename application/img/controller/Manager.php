@@ -127,22 +127,12 @@ class Manager extends Com{
         if(isset($data['pagesize']) &&  isset($data['offset']) && $data['pagesize'] && $data['offset']<=$total){
             $offset=$data['offset'];
             $pagesize=$data['pagesize'];
-            if($offset == 0){
-                $record=Db::table('manager')
-                        ->field('a.*,b.title as role')
-                        ->alias('a')
-                        ->join('role b','a.role_id=b.id','LEFT')
-                        ->order('a.add_time','desc')->limit($pagesize)->select();
-                    return renderJson('1','',['record'=>$record,'total'=>$total]);
-            }
-            $temple=Db::table('manager')->order('add_time','desc')->limit($offset)->select();
-            $tid=array_pop($temple);
+            
             $record=Db::table('manager')
                     ->field('a.*,b.title as role')
                     ->alias('a')
                     ->join('role b','a.role_id=b.id','LEFT')
-                    ->where('a.id','<=',$tid['id'])
-                    ->order('a.add_time','desc')->limit($pagesize)->select();
+                    ->order('a.add_time','desc')->limit($offset,$pagesize)->select();
             // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',['record'=>$record,'total'=>$total]);

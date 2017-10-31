@@ -63,34 +63,7 @@ class AgentPunch extends Com{
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
                 }
-            if($offset == 0){
-                $record=Db::table('transfer_log')->field('amount,to_union_id,create_time')->where('from_union_id',$from_union_id)->where('create_time','between ',[$start,$end])->order('create_time','desc')->limit($pagesize)->select();
-                //获取对象ID、昵称、级别
-                if(!empty($record)){
-                    foreach ($record as $k => $v) {
-                        $res=Db::table('account')->where(['union_id'],$v['to_union_id'])->find();
-                        if($res){
-                            $record[$k]['to_uid']=$res['mssql_account_id'];
-                            $record[$k]['to_nickname']=$res['nick_name'];
-                            $record[$k]['to_level']=$res['level'];
-                        }else{
-                           $res1=Db::connect('db2')->table('AccountsInfo')->where('unionid',$v['to_union_id'])->find();
-                           $record[$k]['to_uid']=$res['UserID'];
-                           $record[$k]['to_nickname']=$res['NickName'];
-                           $record[$k]['to_level']=0; 
-                        }
-                        $record[$k]['from_uid']=$uid;
-                        $record[$k]['from_nickname']=$from_nickname;
-                    }
-                }
-                // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-                return renderJson('1','',['record'=>$record,'total'=>$total]);
-            }
-
-            $temple=Db::table('transfer_log')->where('from_union_id',$from_union_id)->where('create_time','between ',[$start,$end])->order('create_time','desc')->limit($offset)->select();
-            $tid=array_pop($temple);
-            $record=Db::table('transfer_log')->where('from_union_id',$from_union_id)->where('create_time','between ',[$start,$end])->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
+            $record=Db::table('transfer_log')->where('from_union_id',$from_union_id)->where('create_time','between ',[$start,$end])->order('create_time','desc')->limit($offset,$pagesize)->select();
             //获取对象ID、昵称、级别
                 if(!empty($record)){
                     foreach ($record as $k => $v) {
@@ -121,33 +94,8 @@ class AgentPunch extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-        if($offset == 0){
-            $record=Db::table('transfer_log')->where('from_union_id',$from_union_id)->order('create_time','desc')->limit($pagesize)->select();
-            //获取对象ID、昵称、级别 
-                if(!empty($record)){
-                    foreach ($record as $k => $v) {
-                        $res=Db::table('account')->where(['union_id'],$v['to_union_id'])->find();
-                        if($res){
-                            $record[$k]['to_uid']=$res['mssql_account_id'];
-                            $record[$k]['to_nickname']=$res['nick_name'];
-                            $record[$k]['to_level']=$res['level'];
-                        }else{
-                           $res1=Db::connect('db2')->table('AccountsInfo')->where('unionid',$v['to_union_id'])->find();
-                           $record[$k]['to_uid']=$res['UserID'];
-                           $record[$k]['to_nickname']=$res['NickName'];
-                           $record[$k]['to_level']=0; 
-                        }
-                        $record[$k]['from_uid']=$uid;
-                        $record[$k]['from_nickname']=$from_nickname;
-                    }
-                }
-                // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-            return renderJson('1','',['record'=>$record,'total'=>$total]);
-        }
-        $temple=Db::table('transfer_log')->where('from_union_id',$from_union_id)->order('create_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $record=Db::table('transfer_log')->where('from_union_id',$from_union_id)->where('id','<=',$tid['id'])->order('create_time','desc')->limit($pagesize)->select();
+        
+        $record=Db::table('transfer_log')->where('from_union_id',$from_union_id)->order('create_time','desc')->limit($offset,$pagesize)->select();
         //获取对象ID、昵称、级别
                 if(!empty($record)){
                     foreach ($record as $k => $v) {

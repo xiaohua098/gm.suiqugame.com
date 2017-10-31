@@ -5,6 +5,18 @@ use think\Db;
 use \think\Request;
 use think\Session;
 class Statistic extends Controller{
+	// public  function   statistic(){
+	// 	//充值记录
+	// 	$this->recharge();
+	// 	//房卡产出
+	// 	$this->punch();
+	// 	//房卡消耗
+	// 	$this->expend();
+	// 	//房卡库存
+	// 	$this->stock();
+	// 	//代理每日数据
+	// 	$this->daily();
+	// }
 	//充值记录
 	public  function   recharge(){
 	    $data=array();
@@ -244,117 +256,118 @@ class Statistic extends Controller{
 
 	//玩家和代理数据统计
 	public  function  user(){
-		$data=array();
-		$user=Db::connect('db2')->table('AccountsInfo')->field('UserID,unionid,NickName,RegisterDate,LastLogonDate')->select();
-		// $wKindID=Db::connect('db4')->table('GameKindItem')->where('KindName','十三水')->value('KindID');
-		// $mKindID=Db::connect('db4')->table('GameKindItem')->where('KindName','缙云麻将')->value('KindID');
-		// $wConfig=Db::connect('db4')->table('PrivateInfo')->where('KindID',$wKindID)->find();
-		//     $wCon[0]['k']=$wConfig['PlayCout1'];
-		//     $wCon[0]['v']=$wConfig['PlayCost1'];
-		//     $wCon[1]['k']=$wConfig['PlayCout2'];
-		//     $wCon[1]['v']=$wConfig['PlayCost2'];
-		//     $wCon[2]['k']=$wConfig['PlayCout3'];
-		//     $wCon[2]['v']=$wConfig['PlayCost3'];
-		//     $wCon[3]['k']=$wConfig['PlayCout4'];
-		//     $wCon[3]['v']=$wConfig['PlayCost4'];
-		// $mConfig=Db::connect('db4')->table('PrivateInfo')->where('KindID',$mKindID)->find();
-		//     $mCon[0]['k']=$mConfig['PlayCout1'];
-		//     $mCon[0]['v']=$mConfig['PlayCost1'];
-		//     $mCon[1]['k']=$mConfig['PlayCout2'];
-		//     $mCon[1]['v']=$mConfig['PlayCost2'];
-		//     $mCon[2]['k']=$mConfig['PlayCout3'];
-		//     $mCon[2]['v']=$mConfig['PlayCost3'];
-		//     $mCon[3]['k']=$mConfig['PlayCout4'];
-		//     $mCon[3]['v']=$mConfig['PlayCost4'];
-		foreach($user as $k=>$v){
-			// $data[$k]['uid']=$v['UserID'];
-			// $data[$k]['nickname']=$v['NickName'];
-			// $data[$k]['register_time']=$v['RegisterDate'];
-			// $data[$k]['union_id']=$v['unionid'];
-			$s_card=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v['UserID'])->value('InsureScore');
-			$data[$k]['s_card']=$s_card ? $s_card : 0;
-			$recharge=Db::table('order_info')->where('state',__STATE__)->where('union_id',$v['unionid'])->sum('money');
-			$data[$k]['recharge']=$recharge ? $recharge : 0;
-			$punch_num=Db::table('transfer_log')->where('from_union_id',$v['unionid'])->sum('amount');
-			$punch_num=$punch_num ? $punch_num : 0;
-			$game_num=Db::connect('db3')->table('RecordPrivateCost')->where('CostFrom',1)->whereOr('CostFrom',2)->where('UserID',$v['UserID'])->sum('CostValue');
-			$game_num =$game_num ? $game_num : 0;
-			$data[$k]['x_card']=$game_num+$punch_num;
-			// $data[$k]['daily']=($game_num+$punch_num)/round(strtotime(date('Y-m-d',time()))-strtotime(date('Y-m-d',strtotime($v['RegisterDate']))))*24*3600;//代理和玩家不一样(登录天数)注册天数
-		}
-		var_dump($data);exit;
-		foreach ($data as $k1 => $v1) {
-			$agent=Db::table('account')->where('mssql_account_id',$v1['uid'])->find();
-			if(empty($agent)){
-				$data[$k1]['level']=0;
-			}else{
-				$data[$k1]['phone']=$agent['phone'];
-				$data[$k1]['realname']=$agent['real_name'];
-				$data[$k1]['level']=$agent['level'];
-			}
-		}
+		Db::connect('db2')->table('AccountsInfo')->field('UserID,unionid,NickName,RegisterDate ,LastLogonDate')->chunk(1000, function($users){
+    	$wKindID=Db::connect('db4')->table('GameKindItem')->where('KindName','十三水')->value('KindID');
+		$mKindID=Db::connect('db4')->table('GameKindItem')->where('KindName','缙云麻将')->value('KindID');
+		$wConfig=Db::connect('db4')->table('PrivateInfo')->where('KindID',$wKindID)->find();
+		        $wCon[0]['k']=$wConfig['PlayCout1'];
+		        $wCon[0]['v']=$wConfig['PlayCost1'];
+		        $wCon[1]['k']=$wConfig['PlayCout2'];
+		        $wCon[1]['v']=$wConfig['PlayCost2'];
+		        $wCon[2]['k']=$wConfig['PlayCout3'];
+		        $wCon[2]['v']=$wConfig['PlayCost3'];
+		        $wCon[3]['k']=$wConfig['PlayCout4'];
+		        $wCon[3]['v']=$wConfig['PlayCost4'];
+		$mConfig=Db::connect('db4')->table('PrivateInfo')->where('KindID',$mKindID)->find();
+		        $mCon[0]['k']=$mConfig['PlayCout1'];
+		        $mCon[0]['v']=$mConfig['PlayCost1'];
+		        $mCon[1]['k']=$mConfig['PlayCout2'];
+		        $mCon[1]['v']=$mConfig['PlayCost2'];
+		        $mCon[2]['k']=$mConfig['PlayCout3'];
+		        $mCon[2]['v']=$mConfig['PlayCost3'];
+		        $mCon[3]['k']=$mConfig['PlayCout4'];
+		        $mCon[3]['v']=$mConfig['PlayCost4'];
+		//昨天的开始时间和结束时间
+		$start=date('Y-m-d 00:00:00',time()-3600*24);
+		$end=date('Y-m-d 23:59:59',time()-3600*24);
+		      foreach ($users as $k=>$v) {
+		          $user[$k]['uid']=$v['UserID'];
+		          $user[$k]['union_id']=$v['unionid'];
+		          $user[$k]['nickname']=$v['NickName'];
+		          $user[$k]['register_time']=$v['RegisterDate'];
+		          $user[$k]['login_time']=$v['LastLogonDate'];
+		          $s_card=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v['UserID'])->value('InsureScore');
+		          $user[$k]['s_card']=$s_card ? $s_card : 0;
+		          $recharge=Db::table('order_info')->where('state',__STATE__)->whereTime('create_time','yesterday')->where('union_id',$v['unionid'])->sum('money');
+		          $user[$k]['recharge']=$recharge ? $recharge : 0;
+		          $punch_num=Db::table('transfer_log')->whereTime('create_time','yesterday')->where('from_union_id',$v['unionid'])->sum('amount');
+		          $punch_num=$punch_num ? $punch_num : 0;
+		          $game_num=Db::connect('db3')->table('RecordPrivateCost')->where('CostDate','between',[$start,$end])->where('CostFrom',1)->whereOr('CostFrom',2)->where('UserID',$v['UserID'])->sum('CostValue');
+		          $game_num =$game_num ? $game_num : 0;
+		          $user[$k]['x_card']=$game_num+$punch_num;//代理和玩家不一样(登录天数)注册天数
+		          $user[$k]['add_time']=date('Y-m-d',time()-24*3600);
+		          $user[$k]['create_time']=time();
+		      }
 
-		foreach ($data as $k2 => $v2) {
-			if($v2['level']>0){
-				$punch_num=Db::table('transfer_log')->where('from_union_id',$v2['union_id'])->sum('amount');
-				$recharge_num=Db::table('order_info')->where('state',__STATE__)->where('union_id',$v2['union_id'])->where('to_union_id','<>',$v2['union_id'])->sum('amount');
-				$data[$k2]['punch_card']=$punch_num+$recharge_num;
-				$create_time=Db::table('transfer_log')->where('from_union_id',$v2['union_id'])->order('create_time desc')->limit(1)->value('create_time');
-				if(empty($create_time)){
-					$create_time=0;
-				}
-				$data[$k2]['punch_time']=$create_time;
-			}else{
-					//十三水对局
-				$wCost=Db::connect('db3')->table('RecordPrivateCost')
-						->field('CostValue')
-						->where('UserID',$v2['UserID'])
-						->where('CostFrom',1)
-						->whereOr('CostFrom',2)
-						->where('KindID',$wKindID)
-						->select();
-				$wCost=array_column($wCost,'CostValue');
-			    $water=0;
-			    foreach($wCost as $value){
-			      foreach($wCon as $value1){
-			          if($value== $value1['v']){
-			            $water+=$value1['k'];
-			          }
-			      }
-			    }
-			    $data[$k2]['water']=$water;
-				//缙云麻将对局
-				$mCost=Db::connect('db3')->table('RecordPrivateCost')
-						->field('CostValue')
-						->where('UserID',$v['UserID'])
-						->where('CostFrom',1)
-						->whereOr('CostFrom',2)
-						->where('KindID',$mKindID)
-						->select();
-				$mCost=array_column($mCost,'CostValue');
-			    $majiang=0;
-			    foreach($mCost as $value2){
-			      foreach($mCon as $value3){
-			          if($value2== $value3['v']){
-			            $majiang+=$value3['k'];
-			          }
-			      }
-			    }
-			    $data[$k2]['majiang']=$majiang;
-			}
-		}
-		
-		//更新数据库
-		foreach ($data as $k3 => $v3) {
-			$res1=Db::table('user')->where('uid',$v3['uid'])->find();
-			if($res1){
-				Db::table('user')->where('id',$res['id'])->update($v3);
-			}else{
-				Db::table('user')->insert($v3);
-			}                       
-		}
-		return renderJson('1');
+		      foreach($user  as $k1=>$v1){
+		        //游戏对局
+		        //十三水对局
+		        $wCost=Db::connect('db3')->table('RecordPrivateCost')
+		            ->field('CostValue')
+		            ->where('UserID',$v1['uid'])
+		            ->where('CostFrom',1)
+		            ->whereOr('CostFrom',2)
+		            ->where('CostDate','between',[$start,$end])
+		            ->where('KindID',$wKindID)
+		            ->select();
+		        $wCost=array_column($wCost,'CostValue');
+		          $water=0;
+		          foreach($wCost as $value){
+		            foreach($wCon as $value1){
+		                if($value== $value1['v']){
+		                  $water+=$value1['k'];
+		                }
+		            }
+		          }
+		          $user[$k1]['water']=$water;
+		        //缙云麻将对局
+		        $mCost=Db::connect('db3')->table('RecordPrivateCost')
+		            ->field('CostValue')
+		            ->where('UserID',$v1['uid'])
+		            ->where('CostDate','between',[$start,$end])
+		            ->where('CostFrom',1)
+		            ->whereOr('CostFrom',2)
+		            ->where('KindID',$mKindID)
+		            ->select();
+		        $mCost=array_column($mCost,'CostValue');
+		          $majiang=0;
+		          foreach($mCost as $value2){
+		            foreach($mCon as $value3){
+		                if($value2== $value3['v']){
+		                  $majiang+=$value3['k'];
+		                }
+		            }
+		          }
+		          $user[$k1]['majiang']=$majiang;
+		        //代理划卡数量
+		          $punch_num=Db::table('transfer_log')->whereTime('create_time','yesterday')->where('from_union_id',$v1['union_id'])->sum('amount');
+		          $recharge_num=Db::table('order_info')->whereTime('create_time','yesterday')->where('state',__STATE__)->where('union_id',$v1['union_id'])->where('to_union_id','<>',$v1['union_id'])->sum('amount');
+		          $user[$k1]['punch_card']=$punch_num+$recharge_num ? $punch_num+$recharge_num : 0;
+		      }
+		       Db::table('user1')->insertAll($user);
+		  });
 	}
+
+	public  function   usertotal(){   
+        $user=Db::table('user1')
+                  ->alias('a')
+                  ->field('a.uid,a.nickname,a.realname,a.phone,sum(a.s_card) as s_card,sum(a.x_card) as x_card,sum(a.recharge) as recharge,avg(a.x_card) as  daily,a.register_time,a.login_time,level,min(b.create_time) as  agent_time,max(c.create_time) as punch_time')
+                  ->join('agent_log b','a.union_id=b.union_id')
+                  ->join('transfer_log c','a.union_id=c.from_union_id')
+                  ->group('a.uid')
+                  ->select();
+        foreach ($user as $k => &$v) {
+        	$v['add_time']=date('Y-m-d',time()-24*3600);
+            $v['create_time']=time();
+           $id=Db::table('user')->where('uid',$v['uid'])->value('id');
+           if($id){
+              Db::table('user')->where('id',$id)->update($v);
+           }else{
+                Db::table('user')->insert($v);
+           }
+        }
+    }
+	
 
 	//总的统计
 	public  function   census(){

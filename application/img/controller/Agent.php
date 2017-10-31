@@ -77,16 +77,7 @@ class Agent extends Com{
         }
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
-        
-        if($offset == 0){
-            $record=Db::table('user')->where('level','>',0)->order('add_time','desc')->limit($pagesize)->select();
-            //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-            return renderJson('1','',['record'=>$record,'total'=>$total]);
-        }
-        $temple=Db::table('user')->where('level','>',0)->order('add_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $record=Db::table('user')->where('level','>',0)->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        $record=Db::table('user')->where('level','>',0)->order('add_time','desc')->limit($offset,$pagesize)->select();
         //写入日志
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['record'=>$record,'total'=>$total]);
@@ -128,8 +119,8 @@ class Agent extends Com{
     public   function  agentEdit($data){
         $model=new pub;
         $param=$data;
-        if(isset($data['uid']) && isset($data['phone']) && isset($data['realname'])){
-            $res=Db::table('Account')->where('phone',$data['phone'])->find();
+        if(isset($data['uid']) && isset($data['phone']) ){
+            $res=Db::table('account')->where('phone',$data['phone'])->find();
             if($res){
             //     //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该电话号码已注册！']));
@@ -142,12 +133,18 @@ class Agent extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10008','message'=>'该用户未登录公众号']));
                 return  renderJson('10008','该用户未登录公众号！');  
             }
-            
-            $res3=Db::table('account')->where('mssql_account_id',$data['uid'])->update([
+            if(isset($data['realname'])){
+                $res3=Db::table('account')->where('mssql_account_id',$data['uid'])->update([
                                 'phone'=>$data['phone'],
                                 'real_name'=>$data['real_name'],
                                 'update_time'=>time(),   //修改姓名和电话时间
                                 ]);
+            }else{
+                $res3=Db::table('account')->where('mssql_account_id',$data['uid'])->update([
+                                'phone'=>$data['phone'],
+                                'update_time'=>time(),   //修改姓名和电话时间
+                                ]); 
+            }
             if(empty($res3)){
                 // //写入日志
                 //     $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']));

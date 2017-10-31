@@ -44,6 +44,9 @@ class Message extends Com{
       
     }
 
+
+    
+
     public function  horse(){
         $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $model=new pub;
@@ -184,19 +187,14 @@ class Message extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-        if($offset == 0){
-            $notice=Db::table('message')->where('type',1)->order('add_time','desc')->limit($pagesize)->select();
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-            return renderJson('1','',['notice'=>$notice,'total'=>$total]);
-        }
-        $temple=Db::table('message')->where('type',1)->order('add_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $notice=Db::table('message')->where('type',1)->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        
+        $notice=Db::table('message')->where('type',1)->order('add_time','desc')->limit($offset,$pagesize)->select();
          // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['notice'=>$notice,'total'=>$total]);
     }
+
+    
 
 
     public  function  horseAdd($data){
@@ -321,19 +319,179 @@ class Message extends Com{
         // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
-        if($offset == 0){
-            $horse=Db::table('message')->where('type',2)->order('add_time','desc')->limit($pagesize)->select();
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
-            return renderJson('1','',['horse'=>$horse,'total'=>$total]);
-        }
-
-        $temple=Db::table('message')->where('type',2)->order('add_time','desc')->limit($offset)->select();
-        $tid=array_pop($temple);
-        $horse=Db::table('message')->where('type',2)->where('id','<=',$tid['id'])->order('add_time','desc')->limit($pagesize)->select();
+        
+        $horse=Db::table('message')->where('type',2->order('add_time','desc')->limit($offset,$pagesize)->select();
          // //写入日志
             // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['horse'=>$horse,'total'=>$total]);
     }
+
+
+    //消息
+    public function  dope(){
+        $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $model=new pub;
+        $param=Request::instance()->param();
+        $flag=$this->flag;
+        if($flag == '1'){
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            return renderJson('10007','token为空或者token已经过期');
+        }
+        if($flag == '2'){
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            return renderJson('101','违法操作');
+        }
+        if (Request::instance()->isGet()){
+            $data=Request::instance()->param();
+           return  $this->dopeList($data);
+        }
+        // 是否为 POST 请求
+        if (Request::instance()->isPost()){
+            $data=Request::instance()->param();
+           return  $this->dopeAdd($data);
+        }
+        // // 是否为 PUT 请求
+        // if (Request::instance()->isPut()){
+        //     $data=Request::instance()->param();
+        //    return  $this->noticeEdit($data);
+        // }
+        // 是否为 DELETE 请求
+        if (Request::instance()->isDelete()){
+           $data=Request::instance()->param();
+           return  $this->dopeDel($data);
+        }
+      
+    }
+
+    public function  dopeAdd($data){
+        $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $param=$data;
+        $model=new pub;
+
+        if(isset($data['content']) && isset($data['title']) && $data['content']  && $data['title']){
+
+        $data2['add_time']=time();
+        $data2['mid']=$this->mid;
+        $data2['mname']=$this->mname;
+        $data2['type']=3;
+        $data2['is_del']=1;
+        $data2['title']=$data['title'];
+        $data2['content']=$data['content'];
+        $data1=array();
+        $data1['StatusName']='YZ_NEWS_TXT_0';
+        $data1['StatusValue']='1';
+        $data1['StatusString']=$data['content'];
+        
+        // 启动事务
+            Db::startTrans();
+            try{
+                //关闭原来的公告
+                Db::table('message')->where('type',3)->update(['is_del'=>0]);
+                //操作mysql
+                Db::table('message')->insert($data2);
+                //操作sqlsrv
+                Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YZ_NEWS_TXT_0')->delete();
+                Db::connect('db2')->table('SystemStatusInfo')->insert($data1);
+                // 提交事务
+                Db::commit();    
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                return renderJson('10002','操作失败');
+            }
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            return renderJson('1','');
+
+
+        }
+       // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+       return  renderJson('10001','参数不合法');
+            
+    }
+    public  function  dopeDel($data){
+        $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $param=$data;
+        $model=new pub;
+             if(!is_numeric($data['id'])){
+                 // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                return renderJson('10001','参数不合法');
+            }
+            $id=$data['id'];
+
+            // 启动事务
+            Db::startTrans();
+            try{
+               
+                //操作mysql
+               Db::table('message')->where('id',$id)->update(['is_del'=>0]);
+                //操作sqlsrv
+               Db::connect('db2')->table('SystemStatusInfo')->where('StatusName','YZ_NEWS_TXT_0')->delete();
+         
+                // 提交事务
+                Db::commit();    
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                return renderJson('10002','操作失败');
+            }
+            // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            return renderJson('1','');
+
+    }
+
+
+
+    public  function  dopeList($data){
+        $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $param=$data;
+        $model=new pub;
+        if(isset($data['type']) && $data['type'] == 0){
+            $dope=Db::table('message')->where('type',3)->where('is_del',1)->find();
+             // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            return renderJson('1','',[0=>$dope]);
+        }
+        if(isset($data['id']) && is_numeric($data['id'])){
+            $dope=Db::table('message')->field('content,title')->where('id',$data['id'])->find();
+            $dope['content'] = htmlspecialchars_decode($dope['content']);
+             // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            return renderJson('1','',[0=>$dope]);
+        }
+
+        if(empty($data['pagesize'])){
+             // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
+            return renderJson('10001','参数不能为空');
+        }
+        $offset=$data['offset'];
+        $pagesize=$data['pagesize'];
+        $total=Db::table('message')->where('type',3)->count();
+        if($offset>$total){
+                // //写入日志
+        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+            return renderJson('10001','参数不合法');
+            }
+        
+        $dope=Db::table('message')->where('type',3)->order('add_time','desc')->limit($offset,$pagesize)->select();
+         // //写入日志
+            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+        return renderJson('1','',['dope'=>$dope,'total'=>$total]);
+    }
+
+
+
+
+
     
 }

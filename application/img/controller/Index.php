@@ -29,8 +29,7 @@ class Index extends Controller{
                 //判断是否是超级管理员
                 if($res['is_admin']==1)
                 {
-                    $orderList=Db::table('auth')->field('id,title,path,pid')->where('is_show',1)->select();
-                    $paths=array_column($orderList,'path');
+                    $orderList=Db::table('auth')->field('id,title,pid,is_show,url')->where('is_show',1)->select();
                 }else{
                 //    //第一种情况：存节点
                 // $paths=Db::table('role')->where('id',$res['role_id'])->value('paths');
@@ -38,13 +37,14 @@ class Index extends Controller{
                   //第二种情况：存节点id
                   $paths=Db::table('role')->where('id',$res['role_id'])->value('paths');
                   $paths=explode(',',$paths);
-                  foreach($paths as $v){
-                     $orderList[]['id']=$v;
-                     $orderList[]['title']=Db::table('auth')->where('is_show',1)->where('id',$v)->value('title');
-                     $orderList[]['path']=Db::table('auth')->where('is_show',1)->where('id',$v)->value('path');
-                     $orderList[]['pid']=Db::table('auth')->where('is_show',1)->where('id',$v)->value('pid');
+                  foreach($paths as $k=>$v){
+                     $orderList[$k]['id']=$v;
+                     $orderList[$k]['title']=Db::table('auth')->where('id',$v)->value('title');
+                     $orderList[$k]['pid']=Db::table('auth')->where('id',$v)->value('pid');
+                     $orderList[$k]['is_show']=Db::table('auth')->where('id',$v)->value('is_show');
+                     $orderList[$k]['url']=Db::table('auth')->where('id',$v)->value('url');
                   }
-                  $paths=array_column($orderList,'path');  
+                  
                 }  
                               
                 //JWT加密
