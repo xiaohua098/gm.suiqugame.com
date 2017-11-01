@@ -81,7 +81,7 @@ class Auth extends Com{
         $model=new pub; 
         if(empty($data['title']) || empty($data['path'])){
         //写入日志
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法'),$url);
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
         }
         $res1=Db::table('auth')->where('title',$data['title'])->find();
@@ -89,7 +89,7 @@ class Auth extends Com{
 
         if($res1 || $res2){
              //写入日志
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在'),$url);
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在']),$url);
                 return renderJson('10005','该权限已存在');
         }
             $res=Db::table('auth')->insert([
@@ -103,7 +103,7 @@ class Auth extends Com{
             ]);
             if($res){
                 //写入日志
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'添加成功']),$url);
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'添加成功']),$url);
                 return renderJson('1','');
             }
         //写入日志
@@ -125,7 +125,7 @@ class Auth extends Com{
 
         if($res1 || $res2){
              //写入日志
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在'),$url);
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在']),$url);
                 return renderJson('10005','该权限已存在');
         }
         $res=Db::name('auth')->where('id',$data['id'])->update([
@@ -154,7 +154,7 @@ class Auth extends Com{
                 $res=Db::name('auth')->where('id',$data['id'])->delete($data);
                 if($res){
                       //写入日志
-           $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                     return renderJson('1','');
                 }
                  //写入日志
