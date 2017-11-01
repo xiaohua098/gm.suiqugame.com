@@ -11,13 +11,13 @@ class Card extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
             return renderJson('101','违法操作');
         }
         // 是否为 POST 请求
@@ -50,8 +50,8 @@ class Card extends Com{
         $param=$data;
         $model=new pub;
             if(empty($data)){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
             } 
 
@@ -61,8 +61,8 @@ class Card extends Com{
             $num=$data['num'];
             $abs_num=abs($num);
             if($abs_num>2147483647){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
             }
             $mid=$this->mid;
@@ -81,8 +81,8 @@ class Card extends Com{
             foreach ($uid as $k =>$v) {
                 $res=Db::connect('db1')->table('GameScoreInfo')->where('UserId',$v)->find();
                 if(!$res){
-                    // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10008','message'=>$v.'该游戏用户不存在']),$url);
+                    //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10008','message'=>$v.'该游戏用户不存在']),$url);
                     return renderJson('10008','该游戏用户不存在',$v);
                 }
             }
@@ -91,8 +91,8 @@ class Card extends Com{
                 foreach($uid as $k1=>$v1){
                     $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1)->value('InsureScore');
                     if($card_num<$abs_num){
-                        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']),$url);
+                        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']),$url);
                         return renderJson('10001','减房卡数量大于用户房卡剩余数量');
                     }
                 }
@@ -107,12 +107,12 @@ class Card extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
     }
     //房卡全服发放
@@ -123,8 +123,8 @@ class Card extends Com{
             $num=$data['num'];
             $abs_num=abs($num);
             if($abs_num>2147483647){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
             }
             $mid=$this->mid;
@@ -145,8 +145,8 @@ class Card extends Com{
                 foreach($user as $k1=>$v1){
                     $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1['uid'])->value('InsureScore');
                     if($card_num<$abs_num){
-                        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']),$url);
+                        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']),$url);
                         return renderJson('10001','减房卡数量大于用户房卡剩余数量');
                     }
                 }
@@ -164,12 +164,12 @@ class Card extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             } 
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
     }  
 

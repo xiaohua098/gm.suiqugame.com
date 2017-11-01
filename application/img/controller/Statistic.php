@@ -5,18 +5,6 @@ use think\Db;
 use \think\Request;
 use think\Session;
 class Statistic extends Controller{
-	// public  function   statistic(){
-	// 	//充值记录
-	// 	$this->recharge();
-	// 	//房卡产出
-	// 	$this->punch();
-	// 	//房卡消耗
-	// 	$this->expend();
-	// 	//房卡库存
-	// 	$this->stock();
-	// 	//代理每日数据
-	// 	$this->daily();
-	// }
 	//充值记录
 	public  function   recharge(){
 	    $data=array();

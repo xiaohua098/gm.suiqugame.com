@@ -12,13 +12,13 @@ class Auth extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
             return renderJson('101','违法操作');
         }
         if (Request::instance()->isGet()){
@@ -52,8 +52,8 @@ class Auth extends Com{
         
         if(isset($data['id']) && is_numeric($data['id'])){
             $auth=Db::table('auth')->where('id',$data['id'])->find();
-            //     //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',['record'=>$auth]);
         }
         $total=Db::table('auth')->count();
@@ -63,15 +63,15 @@ class Auth extends Com{
             
             $auth=Db::table('auth')->order('add_time','desc')->limit($offset,$pagesize)->select();
 
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             
             return renderJson('1','',['auth'=>$auth,'total'=>$total]);
         }
         $total=Db::table('auth')->count();
         $auth=Db::table('auth')->order('add_time','desc')->select();
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['auth'=>$auth,'total'=>$total]); 
     }
     //添加权限
@@ -80,16 +80,16 @@ class Auth extends Com{
         $param=$data;
         $model=new pub; 
         if(empty($data['title']) || empty($data['path'])){
-        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法'),$url);
+        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法'),$url);
                 return renderJson('10001','参数不合法');
         }
         $res1=Db::table('auth')->where('title',$data['title'])->find();
         $res2=Db::table('auth')->where('path',$data['path'])->find();
 
         if($res1 || $res2){
-             // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在'),$url);
+             //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在'),$url);
                 return renderJson('10005','该权限已存在');
         }
             $res=Db::table('auth')->insert([
@@ -102,12 +102,12 @@ class Auth extends Com{
                 'url'=>$data['url'],
             ]);
             if($res){
-        //         //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'添加成功']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'添加成功']),$url);
                 return renderJson('1','');
             }
-        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'添加失败']),$url);
+        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'添加失败']),$url);
             return renderJson('10000','添加失败');
     }
     //修改权限
@@ -116,16 +116,16 @@ class Auth extends Com{
         $param=$data;
         $model=new pub;
         if(empty($data['title']) || empty($data['id']) || empty($data['path'])){
-           //  //写入日志
-           // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+            //写入日志
+           $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
         }
         $res1=Db::table('auth')->where('id','<>',$data['id'])->where('title',$data['title'])->find();
         $res2=Db::table('auth')->where('id','<>',$data['id'])->where('path',$data['path'])->find();
 
         if($res1 || $res2){
-             // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在'),$url);
+             //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10005','message'=>'该权限已存在'),$url);
                 return renderJson('10005','该权限已存在');
         }
         $res=Db::name('auth')->where('id',$data['id'])->update([
@@ -137,12 +137,12 @@ class Auth extends Com{
             'url'     =>$data['url']
             ]);
         if($res){
-           //  //写入日志
-           // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+           $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
         }
-         // //写入日志
-         //   $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'修改失败']),$url);
+         //写入日志
+           $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'修改失败']),$url);
             return renderJson('10000','修改失败');
     }
     //删除权限
@@ -154,15 +154,15 @@ class Auth extends Com{
                 $res=Db::name('auth')->where('id',$data['id'])->delete($data);
                 if($res){
                       //写入日志
-           // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+           $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                     return renderJson('1','');
                 }
-           //       //写入日志
-           // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'删除失败']),$url);
+                 //写入日志
+           $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'删除失败']),$url);
                 return renderJson('10001','删除失败');
             }
-           //   //写入日志
-           // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+             //写入日志
+           $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
         return renderJson('10001','参数不合法');
     }
 

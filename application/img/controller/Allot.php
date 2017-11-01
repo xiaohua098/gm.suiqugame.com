@@ -12,13 +12,13 @@ class Allot extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
             return renderJson('101','违法操作');
         }
         // 是否为 PUT 请求
@@ -40,17 +40,17 @@ class Allot extends Com{
                 'upd_time'=>time()
                 ]);
             if($res){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                 //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                 return renderJson('1');
             }else{
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'角色分配失败']),$url);
+                 //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10000','message'=>'角色分配失败']),$url);
                 return renderJson('10000','角色分配失败');
             }
         }
-        // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+        //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
         return  renderJson('10001','参数不合法');
     }
 

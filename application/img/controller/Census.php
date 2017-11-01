@@ -12,13 +12,13 @@ class Census extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']));
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']));
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']));
             return renderJson('101','违法操作');
         }
         if (Request::instance()->isGet()){
@@ -34,8 +34,8 @@ class Census extends Com{
 		$param=$data;
         $model=new pub;
 		$record=Db::table('census')->order('create_time desc')->find();
-		// //写入日志
-  //       $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'']),$url);
+		//写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'']),$url);
 		return renderJson('1','',['record'=>$record]);
 	}
 

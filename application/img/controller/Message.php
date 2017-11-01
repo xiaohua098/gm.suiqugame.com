@@ -13,13 +13,13 @@ class Message extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
             return renderJson('101','违法操作');
         }
         if (Request::instance()->isGet()){
@@ -31,11 +31,6 @@ class Message extends Com{
             $data=Request::instance()->param();
            return  $this->noticeAdd($data);
         }
-        // // 是否为 PUT 请求
-        // if (Request::instance()->isPut()){
-        //     $data=Request::instance()->param();
-        //    return  $this->noticeEdit($data);
-        // }
         // 是否为 DELETE 请求
         if (Request::instance()->isDelete()){
            $data=Request::instance()->param();
@@ -52,8 +47,15 @@ class Message extends Com{
         $model=new pub;
         $param=Request::instance()->param();
         $flag=$this->flag;
-        if($flag){
-            return renderJson('10001','token为空或者token已经过期');
+        if($flag == '1'){
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            return renderJson('10007','token为空或者token已经过期');
+        }
+        if($flag == '2'){
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            return renderJson('101','违法操作');
         }
         if (Request::instance()->isGet()){
             $data=Request::instance()->param();
@@ -70,7 +72,7 @@ class Message extends Com{
             $data=Request::instance()->param();
            return  $this->horseDel($data);
         };
-        return renderJson('101','违法操作');
+        
     }
 
     public function  noticeAdd($data){
@@ -107,28 +109,28 @@ class Message extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
 
 
         }
-       // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+       //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
        return  renderJson('10001','参数不合法');
-        	
+            
     }
     public  function  noticeDel($data){
         $url='http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         $param=$data;
         $model=new pub;
              if(!is_numeric($data['id'])){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                 //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
             }
             $id=$data['id'];
@@ -147,12 +149,12 @@ class Message extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
 
     }
@@ -162,35 +164,35 @@ class Message extends Com{
         $model=new pub;
         if(isset($data['type']) && $data['type'] == 0){
             $notice=Db::table('message')->where('type',1)->where('is_del',1)->find();
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',[0=>$notice]);
         }
         if(isset($data['id']) && is_numeric($data['id'])){
             $notice=Db::table('message')->field('content,title')->where('id',$data['id'])->find();
             $notice['content'] = htmlspecialchars_decode($notice['content']);
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',[0=>$notice]);
         }
 
         if(empty($data['pagesize'])){
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
             return renderJson('10001','参数不能为空');
         }
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
         $total=Db::table('message')->where('type',1)->count();
         if($offset>$total){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
         
         $notice=Db::table('message')->where('type',1)->order('add_time','desc')->limit($offset,$pagesize)->select();
-         // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+         //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['notice'=>$notice,'total'=>$total]);
     }
 
@@ -233,18 +235,18 @@ class Message extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
 
 
         }
-        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
         return  renderJson('10001','参数不合法');
     }
 
@@ -254,13 +256,11 @@ class Message extends Com{
         $param=$data;
         $model=new pub;
              if(!is_numeric($data['id'])){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                 //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
             }
             $id=$data['id'];
-
-
              // 启动事务
             Db::startTrans();
             try{
@@ -275,12 +275,12 @@ class Message extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
 
     }
@@ -292,22 +292,22 @@ class Message extends Com{
         $model=new pub;
          if(isset($data['type']) && $data['type'] == 0 ){
             $horse=Db::table('message')->where('type',2)->where('is_del',1)->find();
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',[0=>$horse]);
         }
-        if(isset($data['id']) &&　is_numeric($data['id'])){
+        if(isset($data['id']) && $data['id']){
             $horse=Db::table('message')->field('content,title')->where('id',$data['id'])->find();
             
             $horse['content'] = htmlspecialchars_decode($horse['content']);
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',[0=>$horse]);
         } 
         
         if(empty($data['pagesize'])){
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
             return renderJson('10001','参数不能为空');
         }
 
@@ -315,14 +315,14 @@ class Message extends Com{
         $pagesize=$data['pagesize'];
         $total=Db::table('message')->where('type',2)->count();
         if($offset>$total){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
         
-        $horse=Db::table('message')->where('type',2->order('add_time','desc')->limit($offset,$pagesize)->select();
-         // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+        $horse=Db::table('message')->where('type',2)->order('add_time','desc')->limit($offset,$pagesize)->select();
+         //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['horse'=>$horse,'total'=>$total]);
     }
 
@@ -334,13 +334,13 @@ class Message extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
             return renderJson('101','违法操作');
         }
         if (Request::instance()->isGet()){
@@ -352,11 +352,7 @@ class Message extends Com{
             $data=Request::instance()->param();
            return  $this->dopeAdd($data);
         }
-        // // 是否为 PUT 请求
-        // if (Request::instance()->isPut()){
-        //     $data=Request::instance()->param();
-        //    return  $this->noticeEdit($data);
-        // }
+        
         // 是否为 DELETE 请求
         if (Request::instance()->isDelete()){
            $data=Request::instance()->param();
@@ -399,18 +395,18 @@ class Message extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
 
 
         }
-       // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+       //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
        return  renderJson('10001','参数不合法');
             
     }
@@ -419,8 +415,8 @@ class Message extends Com{
         $param=$data;
         $model=new pub;
              if(!is_numeric($data['id'])){
-                 // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                 //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                 return renderJson('10001','参数不合法');
             }
             $id=$data['id'];
@@ -439,12 +435,12 @@ class Message extends Com{
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
+                //写入日志
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10002','message'=>'操作失败']),$url);
                 return renderJson('10002','操作失败');
             }
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','');
 
     }
@@ -457,35 +453,35 @@ class Message extends Com{
         $model=new pub;
         if(isset($data['type']) && $data['type'] == 0){
             $dope=Db::table('message')->where('type',3)->where('is_del',1)->find();
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',[0=>$dope]);
         }
         if(isset($data['id']) && is_numeric($data['id'])){
             $dope=Db::table('message')->field('content,title')->where('id',$data['id'])->find();
             $dope['content'] = htmlspecialchars_decode($dope['content']);
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',[0=>$dope]);
         }
 
         if(empty($data['pagesize'])){
-             // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
+             //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
             return renderJson('10001','参数不能为空');
         }
         $offset=$data['offset'];
         $pagesize=$data['pagesize'];
         $total=Db::table('message')->where('type',3)->count();
         if($offset>$total){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
         
         $dope=Db::table('message')->where('type',3)->order('add_time','desc')->limit($offset,$pagesize)->select();
-         // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+         //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['dope'=>$dope,'total'=>$total]);
     }
 

@@ -12,13 +12,13 @@ class UserRecharge extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
             return renderJson('101','违法操作');
         }
         //获取某个用户的充值记录  时间戳
@@ -41,8 +41,8 @@ class UserRecharge extends Com{
        $param=$data;
        $model=new pub;
         if(empty($data['pagesize'])){
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
             return renderJson('10001','参数不能为空');
         }
          $offset=$data['offset'];
@@ -66,8 +66,8 @@ class UserRecharge extends Com{
                     $end=date('Y-m-d H:i:s',$data['end_time']);
                     $total=Db::table('order_info')->where('create_time','between ',[$start,$end])->where('union_id',$union_id)->count();
                      if($offset>$total){
-                        // //写入日志
-                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                        //写入日志
+                        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
                     
@@ -80,15 +80,15 @@ class UserRecharge extends Com{
                                 $record[$k]['level']=$level;
                             }
                         }
-                    // //写入日志
-                    // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                    //写入日志
+                    $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                     return renderJson('1','',['record'=>$record,'total'=>$total]);
                 }
 
                 $total=Db::table('order_info')->where('union_id',$union_id)->count();
                  if($offset>$total){
-                        // //写入日志
-                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                        //写入日志
+                    $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
                 
@@ -113,8 +113,8 @@ class UserRecharge extends Com{
                     $end=date('Y-m-d H:i:s',$data['end_time']);
                     $total=Db::table('order_info')->where('create_time','between ',[$start,$end])->count();
                      if($offset>$total){
-                        // //写入日志
-                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                        //写入日志
+                        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
                     
@@ -125,15 +125,15 @@ class UserRecharge extends Com{
                             ->where('a.create_time','between',[$start,$end])
                             ->order('a.create_time','desc')
                             ->limit($offset,$pagesize)->select();
-                    // //写入日志
-                    // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                    //写入日志
+                    $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                     return renderJson('1','',['record'=>$record,'total'=>$total]);
                 }
 
                 $total=Db::table('order_info')->count();
                  if($offset>$total){
-                        // //写入日志
-                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                        //写入日志
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
                     return renderJson('10001','参数不合法');
                     }
                 
@@ -143,8 +143,8 @@ class UserRecharge extends Com{
                         ->field('b.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
                        ->order('a.create_time','desc')
                        ->limit($offset,$pagesize)->select();
-                // //写入日志
-                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                //写入日志
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
        
     }
@@ -183,8 +183,8 @@ class UserRecharge extends Com{
                                 $record[$k]['level']=$level;
                             }
                         }
-                    // //写入日志
-                    // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                    //写入日志
+                    $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                     return renderJson('1','',['record'=>$record,'total'=>$total]);
                 }
 
@@ -199,8 +199,8 @@ class UserRecharge extends Com{
                                 $record[$k]['level']=$level;
                             }
                         }
-                // //写入日志
-                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                //写入日志
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
@@ -218,8 +218,8 @@ class UserRecharge extends Com{
                             ->where('a.create_time','between',[$start,$end])
                             ->order('a.create_time','desc')
                             ->select();
-                    // //写入日志
-                    // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                    //写入日志
+                    $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                     return renderJson('1','',['record'=>$record,'total'=>$total]);
                 }
 
@@ -231,8 +231,8 @@ class UserRecharge extends Com{
                         ->field('b.mssql_account_id as uid,a.union_id,a.money,a.amount,a.code,a.state,a.create_time,b.nickname,b.level')
                        ->order('a.create_time','desc')
                        ->select();
-                // //写入日志
-                // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+                //写入日志
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
                 return renderJson('1','',['record'=>$record,'total'=>$total]);
         
     }

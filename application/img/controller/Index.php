@@ -14,15 +14,15 @@ class Index extends Controller{
          if(Request::instance()->isPost()){
             $data=Request::instance()->post();
             if(empty($data['name']) || empty($data['pwd'])){
-                // //写入日志
-        // $model->saveRecord(0,'','GM登录',json_encod($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+                $model->saveRecord(0,'','GM登录',json_encod($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
               return  renderJson('10001','参数不合法');
             }
             $param=$data;
             $res=Db::table('manager')->where('name',$data['name'])->find();
             if(empty($res)){
-                // //写入日志
-        // $model->saveRecord(0,$data['name'],'GM登录',json_encod($param),json_encode(['code'=>'10001','message'=>'该账号不存在']),$url);
+                //写入日志
+                $model->saveRecord(0,$data['name'],'GM登录',json_encod($param),json_encode(['code'=>'10001','message'=>'该账号不存在']),$url);
               return  renderJson('10001','该账号不存在！');
             }
             if($res['pwd'] == sha1('suiqu_'.$data['pwd'])){
@@ -31,20 +31,10 @@ class Index extends Controller{
                 {
                     $orderList=Db::table('auth')->field('id,title,pid,is_show,url')->where('is_show',1)->select();
                 }else{
-                //    //第一种情况：存节点
-                // $paths=Db::table('role')->where('id',$res['role_id'])->value('paths');
-                //   $paths=explode(',',$paths);
-                  //第二种情况：存节点id
+                  //存节点id
                   $paths=Db::table('role')->where('id',$res['role_id'])->value('paths');
                   $paths=explode(',',$paths);
-                  foreach($paths as $k=>$v){
-                     $orderList[$k]['id']=$v;
-                     $orderList[$k]['title']=Db::table('auth')->where('id',$v)->value('title');
-                     $orderList[$k]['pid']=Db::table('auth')->where('id',$v)->value('pid');
-                     $orderList[$k]['is_show']=Db::table('auth')->where('id',$v)->value('is_show');
-                     $orderList[$k]['url']=Db::table('auth')->where('id',$v)->value('url');
-                  }
-                  
+                  $orderList=Db::table('auth')->field('id,title,pid,is_show,url')->where('id','in',$paths)->select();
                 }  
                               
                 //JWT加密
@@ -67,25 +57,23 @@ class Index extends Controller{
                 $login_arr['add_time']=time();
                 $login_arr['expire_time']=date('Y-m-d H:i:s',time()+24*3600*7);
                 $login_arr['token']=$token;
-                // var_dump($login_arr);exit;
                 $res1=Db::table('login_record')->insert($login_arr);
                 if(!$res1){
-                    // //写入日志
-        // $model->saveRecord($res['id],$res['name'],'添加登录记录',json_encode($param),json_encode(['code'=>'10000','message'=>'操作失败']),$url);
+                    //写入日志
+                    $model->saveRecord($res['id'],$res['name'],'添加登录记录',json_encode($param),json_encode(['code'=>'10000','message'=>'操作失败']),$url);
                     return renderJson('10000','操作失败');
                 }
-               // //写入日志
-        // $model->saveRecord($res['id'],$res['name'],'GM登录',json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);   
+               //写入日志
+                $model->saveRecord($res['id'],$res['name'],'GM登录',json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);   
               return renderJson('1','',['token'=>$token,'orderList'=>$orderList]);
-              // return renderJson('1','',$token);
             }else{
-                 // //写入日志
-        // $model->saveRecord($res['id'],$res['name'],'GM登录',json_encode($param),json_encode(['code'=>'10000','message'=>'登录密码错误']),$url);   
+                 //写入日志
+                $model->saveRecord($res['id'],$res['name'],'GM登录',json_encode($param),json_encode(['code'=>'10000','message'=>'登录密码错误']),$url);   
               return renderJson('10000','登录密码错误!');
             }
         }
-        // //写入日志
-        // $model->saveRecord(0,'','GM登录',json_encode($param),json_encode(['code'=>'101','message'=>'越权访问失败']),$url);
+        //写入日志
+        $model->saveRecord(0,'','GM登录',json_encode($param),json_encode(['code'=>'101','message'=>'越权访问失败']),$url);
         return renderJson('101','越权访问失败！');
     } 
 }

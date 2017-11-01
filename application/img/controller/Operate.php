@@ -11,13 +11,13 @@ class Operate extends Com{
         $param=Request::instance()->param();
         $flag=$this->flag;
         if($flag == '1'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10007','message'=>'token为空或者token已经过期']),$url);
             return renderJson('10007','token为空或者token已经过期');
         }
         if($flag == '2'){
-            // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
+            //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'101','message'=>'违法操作']),$url);
             return renderJson('101','违法操作');
         }
         //某用户消耗房卡记录
@@ -40,8 +40,8 @@ class Operate extends Com{
         $param=$data;
         $model=new pub;
         if(empty($data['pagesize'])){
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不能为空']),$url);
             return renderJson('10001','参数不能为空');
         }
         $offset=$data['offset'];
@@ -52,28 +52,28 @@ class Operate extends Com{
             $end=$data['end_time'];
             $total=Db::table('operate_record')->where('add_time','between ',[$start,$end])->count();
             if($offset>$total){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
-            return renderJson('10001','参数不合法');
+                //写入日志
+                $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                    return renderJson('10001','参数不合法');
             }
             
             $record=Db::table('operate_record')->where('add_time','between ',[$start,$end])->order('add_time','desc')->limit($offset,$pagesize)->select();
         
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
         $total=Db::table('operate_record')->count();
         if($offset>$total){
-                // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
+                //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'参数不合法']),$url);
             return renderJson('10001','参数不合法');
             }
         
         $record=Db::table('operate_record')->order('add_time','desc')->limit($offset,$pagesize)->select();
-        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['record'=>$record,'total'=>$total]);    
     }
 
@@ -89,15 +89,15 @@ class Operate extends Com{
             $total=Db::table('operate_record')->where('add_time','between ',[$start,$end])->count();
             $record=Db::table('operate_record')->where('add_time','between ',[$start,$end])->order('add_time','desc')->select();
         
-            // //写入日志
-            // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+            //写入日志
+            $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
             return renderJson('1','',['record'=>$record,'total'=>$total]);
         }
 
         $total=Db::table('operate_record')->count();
         $record=Db::table('operate_record')->order('add_time','desc')->select();
-        // //写入日志
-        // $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
+        //写入日志
+        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'1','message'=>'']),$url);
         return renderJson('1','',['record'=>$record,'total'=>$total]);    
     }
 
