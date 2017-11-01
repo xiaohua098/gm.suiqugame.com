@@ -146,7 +146,7 @@ class Card extends Com{
                     $card_num=Db::connect('db1')->table('GameScoreInfo')->where('UserID',$v1['uid'])->value('InsureScore');
                     if($card_num<$abs_num){
                         //写入日志
-        $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']),$url);
+                    $model->saveRecord($this->mid,$this->mname,$this->path,json_encode($param),json_encode(['code'=>'10001','message'=>'减房卡数量大于用户房卡剩余数量']),$url);
                         return renderJson('10001','减房卡数量大于用户房卡剩余数量');
                     }
                 }
